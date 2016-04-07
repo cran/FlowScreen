@@ -1,6 +1,6 @@
-2e239603d35e3f649990854d12bf6aab *DESCRIPTION
+118878da64f7bdb21d25064048cfa537 *DESCRIPTION
 531d0700d3d399ba9b2e56df68c7c1f1 *NAMESPACE
-b63d0ca8353610b3b5471e1719bdea00 *R/FDC.R
+c2043007146347103338deedbcf666ce *R/FDC.R
 862e4898ddfb9c7fb1bc1a131e110329 *R/MAMn.R
 804a01e4429f228d3e6430fdbe9f77e3 *R/NA.runs.r
 6e46f36d5f8a666576b1534fbed95e9e *R/NA.sum.r
@@ -45,7 +45,7 @@ a23ab941b644eeff419550b01653cd55 *R/station.info.R
 1a0b0131b9f27facb2efba03a214e162 *data/cania.sub.ts.rda
 c297586ff137670a022a99bd6cbd534c *data/caniapiscau.rda
 3e60b4d54607ccac933110e091e2355b *data/caniapiscau.res.rda
-52631f6a8acd03d8fbcb63f3c2c7f968 *man/FDC.Rd
+f73e00eae8b47684ffa9aafc4e3e8cb1 *man/FDC.Rd
 b4197352e5051291dc5a5a0ae5dbad81 *man/FlowScreen.Rd
 b25a3604afc424bcd2ef8ca5da846ee8 *man/MAMn.Rd
 4aec315996065e79e5e342c83d24dc19 *man/NA.runs.Rd

@@ -1,9 +1,7 @@
 #' Flow Duration Curve
 #'
-#' Produces summary screening plots of high flow, low flow, or baseflow metrics.  
-#' Each plot shows significant temporal trends and step changes. Intended for use as 
-#' a data quality screening tool aimed at identifying streamflow records with 
-#' anthropogenic impacts or data inhomogeneities.
+#' Produces a flow duration curve plot with optional Gustard type-curves that 
+#' can be used to estimate catchment permeability.
 #' @param flow daily streamflow time series
 #' @param title character string for plot title
 #' @param normal boolean indicating whether to plot on normal probability 
@@ -19,7 +17,7 @@
 #' caniapiscau <- subset(caniapiscau, !is.na(caniapiscau$Flow))
 #' FDC(caniapiscau$Flow, title="Caniapiscau River")
 
-FDC <- function(flow, title, normal=FALSE, gust=TRUE) {
+FDC <- function(flow, title=NULL, normal=FALSE, gust=TRUE) {
     
     g <-array(NA,dim=c(20,7))    	###  Values for %mean flow for Type Curves Gustard et al 1992.
     
@@ -45,7 +43,7 @@ FDC <- function(flow, title, normal=FALSE, gust=TRUE) {
     g[20,] <-c( 153.69, 142.20, 106.49, 92.46, 84.77, 79.43, 69.85)
     
     p <-c(.02,.05,.50,.80,.90,.95,.99)
-    rank <-rank(flow, ties.method="max")
+    rank <- rank(flow, ties.method="max")
     rank <- max(rank) - rank
     exceedtime <- 1*(rank / (length(flow) + 1))
     
@@ -88,7 +86,6 @@ FDC <- function(flow, title, normal=FALSE, gust=TRUE) {
         
         graphics::abline(v=0.50, lty=2, col='red')
         graphics::abline(h=100, lty=2, col='red')
-        #return
     }
     
     
@@ -114,5 +111,4 @@ FDC <- function(flow, title, normal=FALSE, gust=TRUE) {
         graphics::abline(v=0.50, lty=2, col='red')
         graphics::abline(h=100, lty=2, col='red')
     }
-    #return
 }

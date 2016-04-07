@@ -4,7 +4,7 @@
 \alias{FDC}
 \title{Flow Duration Curve}
 \usage{
-FDC(flow, title, normal = FALSE, gust = TRUE)
+FDC(flow, title = NULL, normal = FALSE, gust = TRUE)
 }
 \arguments{
 \item{flow}{daily streamflow time series}
@@ -17,10 +17,8 @@ axis (normal=TRUE) or linear probability axis (default, normal=FALSE)}
 \item{gust}{boolean indicating whether to plot Gustard type curves.}
 }
 \description{
-Produces summary screening plots of high flow, low flow, or baseflow metrics.  
-Each plot shows significant temporal trends and step changes. Intended for use as 
-a data quality screening tool aimed at identifying streamflow records with 
-anthropogenic impacts or data inhomogeneities.
+Produces a flow duration curve plot with optional Gustard type-curves that 
+can be used to estimate catchment permeability.
 }
 \examples{
 data(caniapiscau)
