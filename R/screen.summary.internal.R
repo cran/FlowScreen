@@ -42,7 +42,6 @@ screen.summary.internal <- function(input, mparam, type, ylabs, i, DataType, maf
         MyX.mod <- c(1:length(MyX))
         for (j in 1:length(MyX)) {MyX.mod[j] <- (as.numeric(MyX[j]) - Year1) + 1}
         MyXMax <- NumYrs
-        
     }
 
     ### set y axis limits based on y-axis label
@@ -90,8 +89,7 @@ screen.summary.internal <- function(input, mparam, type, ylabs, i, DataType, maf
     # if plot is in bottom row, add axis labels
     if (PlotNo %in% c(11,12,13)) {
         
-        ifelse(NumYrs > 100, mby <- 20, ifelse(NumYrs > 50, mby <- 15, mby <- 10))
-
+        mby <- ifelse(NumYrs > 100, 20, ifelse(NumYrs > 50, 15, 10))
         myticks <- seq(from = 1, to = max(MyX.mod), by = mby)
         mlabels <- seq(from = Year1, to = YearEnd, by = mby)
         graphics::axis(1, at=myticks, labels=mlabels)
@@ -100,17 +98,19 @@ screen.summary.internal <- function(input, mparam, type, ylabs, i, DataType, maf
     if (PlotNo == 10) {
         if (type=="l") {
                 
-            series.length <- YearEnd - Year1
-            ifelse(NumYrs > 100, mby <- 20, ifelse(series.length > 50, mby <- 15, mby <- 10))
-            myticks <- seq(from=1, to=365.25*(series.length + 2), by = (365.25 * mby))
+            #series.length <- YearEnd - Year1
+            #ifelse(NumYrs > 100, mby <- 20, ifelse(series.length > 50, mby <- 15, mby <- 10))
+            mby <- ifelse(NumYrs > 100, 20, ifelse(NumYrs > 50, 15, 10))
+            myticks <- seq(from=1, to=365.25*(NumYrs), by = (365.25 * mby))
             mlabels <- seq(from = Year1, to = YearEnd, by = mby)
             graphics::axis(1, at=myticks, labels=mlabels)
 
         } else {
 
-            ifelse(NumYrs > 100, mby <- 20, ifelse(NumYrs > 50, mby <- 15, mby <- 10))
+            mby <- ifelse(NumYrs > 100, 20, ifelse(NumYrs > 50, 15, 10))
             myticks <- seq(from = 1, to = max(MyX.mod), by = mby)
             mlabels <- seq(from = Year1, to = YearEnd, by = mby)
+            
             graphics::axis(1, at=myticks, labels=mlabels)
             
         }

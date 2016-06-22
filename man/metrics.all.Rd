@@ -117,11 +117,10 @@ This function calculates streamflow metrics and calculates the
 # load subset of daily streamflow time series for the Caniapiscau River
 data(cania.sub.ts)
 
-# further subset to meet maximum example run-time requirements
-cania.sub.ts <- subset(cania.sub.ts, cania.sub.ts$hyear \%in\% c(1973:1987))
-
+\dontrun{
 # calculate low flow, high flow, and baseflow metrics
 res <- metrics.all(cania.sub.ts)
+}
 }
 \author{
 Jennifer Dierauer

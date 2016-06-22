@@ -29,8 +29,9 @@ regime.internal <- function(TS, q=c(0.9, 0.1)) {
     ### create plot
     graphics::par(mar=c(4,4,0,0))
     yl1=expression(paste("Discharge (m" ^{3}, "/s)"))
+    y.lims <- y.lims <- range(pretty(c(0, TS$Flow)))
     graphics::plot(Qdoy[,1], col="#6BAED6", type="p", pch=19, cex=0.5, xlab="", ylab="",
-         xaxt="n")#max
+         xaxt="n", ylim=y.lims)#max
     graphics::title(ylab=yl1, line=2)
     graphics::points(Qdoy[,2], col="#6BAED6", type="p", pch=19, cex=0.5) #min
     graphics::polygon(xx, yy, col="gray", border="#3182BD")

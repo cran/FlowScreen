@@ -4,7 +4,7 @@
 \alias{regime}
 \title{Plot flow regime}
 \usage{
-regime(TS, q = c(0.9, 0.1), text = "d", by = "hdoy")
+regime(TS, q = c(0.9, 0.1), text = "d", by = "hdoy", y.lims = NA)
 }
 \arguments{
 \item{TS}{output from \code{\link{create.ts}} containing a data.frame of flow
@@ -21,6 +21,8 @@ returned from \code{\link{station.info}}.}
 \item{by}{Character string indicating whether to plot the regime by day of 
 the hydrologic year (defined using \code{\link{create.ts}}) or by day of 
 the calendar year. Options are "doy" (calendar year) or "hdoy" (default, hydrologic year).}
+
+\item{y.lims}{optional user-defined y-axis minimum and maximim. e.g. c(0, 500)}
 }
 \description{
 This function plots the min, max, mean, and two user-defined quantiles of 

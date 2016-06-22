@@ -9,7 +9,8 @@
 #' @details This function calculates metrics intended to focus on snowmelt-related
 #'   streamflow occuring in spring and summer. For catchments in cold climates, 
 #'   the baseflow peak can be interpreted as snowmelt-induced. Baseflow is estimated with 
-#'   \code{\link{bf_eckhardt}}.
+#'   \code{\link{bf_eckhardt}}. If total annual flow is equal to 0, returns NA for that
+#'   year.
 #' @return Returns a data.frame with the following columns:
 #'   \itemize{
 #'     \item Start - day of year defining the start of the baseflow peak
@@ -63,22 +64,26 @@ pk.bf.stats <- function(TS, bfpct=c(25,50,75)) {
         temp <- YearStack[[i]]
         j <- 0
         
-        while (Have90 == FALSE) { #loop through days until Q90 value is reached
-            j <- j+1
-            
-            mysum <- mysum + temp$ro[j]
-            
-            if (mysum > BFVy[i,2] & Have10 == FALSE){
-                Have10 <- TRUE
-                Output[i,1] <- as.character(temp$Date[j])}
-            
-            else if (mysum > BFVy[i,3] & Have50 == FALSE){
-                Have50 <- TRUE
-                Output[i,2] <- as.character(temp$Date[j])}
-            
-            else if (mysum > BFVy[i,4] & Have90 == FALSE){
-                Have90 <- TRUE
-                Output[i,3] <- as.character(temp$Date[j])}
+        if (sum(temp$Flow) > 0) {
+            while (Have90 == FALSE) { #loop through days until Q90 value is reached
+                j <- j+1
+                
+                mysum <- mysum + temp$ro[j]
+                
+                if (mysum > BFVy[i,2] & Have10 == FALSE){
+                    Have10 <- TRUE
+                    Output[i,1] <- as.character(temp$Date[j])}
+                
+                else if (mysum > BFVy[i,3] & Have50 == FALSE){
+                    Have50 <- TRUE
+                    Output[i,2] <- as.character(temp$Date[j])}
+                
+                else if (mysum > BFVy[i,4] & Have90 == FALSE){
+                    Have90 <- TRUE
+                    Output[i,3] <- as.character(temp$Date[j])}
+            }
+        } else {
+            Output[i,c(1:3)] <- NA
         }
     }
     

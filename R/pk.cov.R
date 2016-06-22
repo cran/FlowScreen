@@ -48,32 +48,36 @@ pk.cov <- function(TS) {
         temp <- YearStack[[i]]
         j <- 0
         
+        total.flow <- sum(temp$Flow)
+        q25 <- total.flow * 0.25
+        q50 <- total.flow * 0.5
+        q75 <- total.flow * 0.75
         
-        while (Have75 == FALSE) { #loop through days until 75% is reached
-            j <- j+1
-            
-            total.flow <- sum(temp$Flow)
-            
-            q25 <- total.flow * 0.25
-            q50 <- total.flow * 0.5
-            q75 <- total.flow * 0.75
-            
-            mysum <- mysum + temp$Flow[j]
-            
-            if (mysum > q25 & Have25 == FALSE){
-                Have25 <- TRUE
-                out[i,2] <- as.numeric(temp$hdoy[j])
+        if (total.flow > 0) {
+        
+            while (Have75 == FALSE) { #loop through days until 75% is reached
+                
+                j <- j+1      
+                mysum <- mysum + temp$Flow[j]
+                
+                if (mysum > q25 & Have25 == FALSE){
+                    Have25 <- TRUE
+                    out[i,2] <- as.numeric(temp$hdoy[j])
+                }
+                
+                else if (mysum > q50 & Have50 == FALSE){
+                    Have50 <- TRUE
+                    out[i,3] <- as.numeric(temp$hdoy[j])
+                }
+                
+                else if (mysum > q75 & Have75 == FALSE){
+                    Have75 <- TRUE
+                    out[i,4] <- as.numeric(temp$hdoy[j])
+                }
             }
-            
-            else if (mysum > q50 & Have50 == FALSE){
-                Have50 <- TRUE
-                out[i,3] <- as.numeric(temp$hdoy[j])
-            }
-            
-            else if (mysum > q75 & Have75 == FALSE){
-                Have75 <- TRUE
-                out[i,4] <- as.numeric(temp$hdoy[j])
-            }
+                
+        } else {
+            out[i,c(2:4)] <- NA
         }
     }
     

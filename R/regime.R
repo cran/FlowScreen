@@ -16,7 +16,8 @@
 #' @param text optional character string for margin text, e.g. for station name, 
 #'   location, or other notes. Set to NULL if no margin text is wanted, or set to "d" 
 #'   to use default text containing the station ID, station name, and province/state 
-#'   returned from \code{\link{station.info}}. 
+#'   returned from \code{\link{station.info}}.
+#' @param y.lims optional user-defined y-axis minimum and maximim. e.g. c(0, 500)
 #' @author Jennifer Dierauer
 #' @export
 #' @examples
@@ -25,7 +26,7 @@
 #' regime(cania.sub.ts)
 
 
-regime <- function(TS, q=c(0.9, 0.1), text="d", by="hdoy") {
+regime <- function(TS, q=c(0.9, 0.1), text="d", by="hdoy", y.lims=NA) {
     
     opar <- graphics::par(no.readonly = TRUE)
     hyrstart <- as.numeric(subset(TS, TS$hmonth==1)$month[1])
@@ -47,7 +48,7 @@ regime <- function(TS, q=c(0.9, 0.1), text="d", by="hdoy") {
     Qdoy[,3]<-tapply(TS$Flow, doy, mean, na.rm=TRUE)
     Qdoy[,4]<-tapply(TS$Flow, doy, stats::quantile, q[1], na.rm=TRUE)
     Qdoy[,5]<-tapply(TS$Flow, doy, stats::quantile, q[2], na.rm=TRUE)
-    Qdoy[,6]<-tapply(TS$Flow, doy, stats::median, na.rm=T)
+    Qdoy[,6]<-tapply(TS$Flow, doy, stats::median, na.rm=TRUE)
     
     ### set up polygon for inter-quantile shading
     mdoy <- as.numeric(unique(doy))
@@ -59,15 +60,28 @@ regime <- function(TS, q=c(0.9, 0.1), text="d", by="hdoy") {
     if (!is.null(text)) {graphics::par(oma=c(0,0,1,0))}
     
     yl1=expression(paste("Discharge (m" ^{3}, "/s)"))
-    graphics::plot(Qdoy[,1], col="#6BAED6", type="p", pch=19, cex=0.5, xlab="", ylab="",
-         xaxt="n")#max
+
+    if (!is.na(y.lims[1])) {
+        graphics::plot(Qdoy[,1], col="#6BAED6", type="p", pch=19, cex=0.5, 
+                       xlab="", ylab="", xaxt="n", ylim=y.lims)#max
+    } else {
+        y.lims <- range(pretty(c(0, TS$Flow)))
+        graphics::plot(Qdoy[,1], col="#6BAED6", type="p", pch=19, cex=0.5, 
+                       xlab="", ylab="", xaxt="n", ylim=y.lims)#max
+    }
+
     graphics::title(ylab=yl1, line=2)
     graphics::points(Qdoy[,2], col="#6BAED6", type="p", pch=19, cex=0.5) #min
     graphics::polygon(xx, yy, col="gray", border="#3182BD")
     graphics::points(Qdoy[,3],col="#08519C",type="l",lwd=2) #mean
     graphics::points(Qdoy[,6], col="gray50", type="l", lwd=2) #median
     
-    axis_doy.internal(hyrstart)
+    if (by == "hdoy") {
+        axis_doy.internal(hyrstart)
+    } else {
+        axis_doy.internal(1)
+    }
+
     
     SYMnames <- c("maximum", paste(as.character(max(q)), "quantile"), "mean", "median", 
                   paste(as.character(min(q)), "quantile"), "minimum")

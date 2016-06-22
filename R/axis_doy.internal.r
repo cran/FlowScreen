@@ -13,5 +13,5 @@ axis_doy.internal <- function(hyrstart=10) {
     wday<-cday[hyrstart:(hyrstart+11)]-cday[hyrstart]+1
     wtxt<-ctxt[hyrstart:(hyrstart+11)]
     
-    graphics::axis(side=1, at=wday , labels=wtxt, line = 0, tck = -0.025, xlab="",  xlab="")
+    graphics::axis(side=1, at=wday , labels=wtxt, line = 0, xlab="",  xlab="")
 }

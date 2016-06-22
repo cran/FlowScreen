@@ -30,7 +30,8 @@ peak based on percent of the total annual baseflow volume.
 This function calculates metrics intended to focus on snowmelt-related
   streamflow occuring in spring and summer. For catchments in cold climates, 
   the baseflow peak can be interpreted as snowmelt-induced. Baseflow is estimated with 
-  \code{\link{bf_eckhardt}}.
+  \code{\link{bf_eckhardt}}. If total annual flow is equal to 0, returns NA for that
+  year.
 }
 \examples{
 data(cania.sub.ts)

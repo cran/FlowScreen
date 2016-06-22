@@ -4,10 +4,13 @@
 \alias{read.flows}
 \title{Read .csv or .Rdata file of streamflows}
 \usage{
-read.flows(filename)
+read.flows(filename, convert = TRUE)
 }
 \arguments{
-\item{filename}{name of .csv file to be read from.}
+\item{filename}{name of .csv file to be read.}
+
+\item{convert}{Boolean indicating whether or not to convert USGS flow values
+from cubic feet per second to cubic meters per second.}
 }
 \description{
 Reads .csv or .Rdata files of daily streamflow time series.  Recognizes 

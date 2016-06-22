@@ -6,11 +6,13 @@
 #' returns data frame with ID, Date, and Flow, and, if available,
 #' associated quality codes and source agency. Replaces negative values that are 
 #' sometimes used to denote missing data with NAs.
-#' @param filename name of .csv file to be read from.
+#' @param filename name of .csv file to be read.
+#' @param convert Boolean indicating whether or not to convert USGS flow values
+#'   from cubic feet per second to cubic meters per second.
 #' @author Jennifer Dierauer
 #' @export
 
-read.flows <- function(filename) {
+read.flows <- function(filename, convert=TRUE) {
 
     my.split <- unlist(strsplit(filename, ".", fixed=T))
     suff <- tolower(my.split[length(my.split)])
@@ -198,8 +200,13 @@ read.flows <- function(filename) {
         if (Station %in% USGS.site.info$STAID) {ddata$Agency <- "USGS"}
     }
     
-    ##replace no data values (e.g. -99) with NA
+    
+    ##replace no data values (e.g. -999) with NA
     ddata$Flow[ddata$Flow < 0] <- NA
+    
+    if (convert == TRUE) {
+        ddata$Flow <- ddata$Flow * 0.0283168
+    }
 
     return(ddata)
 

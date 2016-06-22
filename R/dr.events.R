@@ -100,12 +100,12 @@ dr.events <- function(TS, Qdr=0.2, WinSize=30, IntEventDur=10, EventDur=15) {
         ### ignore drought events with duration < EventDur
         for (j in 1:eventNo) {
             PDS.sub <- subset(myPDS, myPDS$Event==j)
-            dur <- length(PDS.sub[,1])
+            dur <- as.numeric(PDS.sub$Date[length(PDS.sub[,1])] - as.Date(PDS.sub$Date[1]))
             if (dur >= EventDur) {
                 
                 dstats <- data.frame(Event=j, 
                                      Start=as.Date(PDS.sub$Date[1]),
-                                     End=as.Date(PDS.sub$Date[dur]),
+                                     End=as.Date(PDS.sub$Date[length(PDS.sub[,1])]),
                                      maxDef=max(PDS.sub$Def), 
                                      Severity=sum(PDS.sub$Def),
                                      Duration=as.numeric(dur),

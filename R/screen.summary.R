@@ -154,10 +154,17 @@ screen.summary <- function(metrics, type="h", language="English", StnInfo=NULL) 
         }
     }
         
-    
+    omityrs <- metrics[[4]]$Years
     Year1 <- min(c(as.numeric(TS$hyear[1]), as.numeric(TS$year[1])))
     YearEnd <- max(c(max(as.numeric(TS$year)), max(as.numeric(TS$hyear))))
     hyrstart <- as.numeric(subset(TS, TS$hmonth==1)$month[1])
+    
+    while (YearEnd %in% omityrs) {
+        YearEnd <- YearEnd - 1
+    }
+    while (Year1 %in% omityrs) {
+        Year1 <- Year1 + 1
+    }
     
     ## Plots 4 to 13
     for (i in 1:10) {
