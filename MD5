@@ -1,4 +1,4 @@
-2608013229dd2534777e1cd2d3cc7cb6 *DESCRIPTION
+cd140425601cb91904bd113a0249a2ce *DESCRIPTION
 531d0700d3d399ba9b2e56df68c7c1f1 *NAMESPACE
 c2043007146347103338deedbcf666ce *R/FDC.R
 862e4898ddfb9c7fb1bc1a131e110329 *R/MAMn.R
@@ -30,10 +30,10 @@ b89fecdba0d36c6abcb6607e88aa7179 *R/mqt.r
 49a72b7cd1bbffe7b1b0372997bd96ef *R/pk.max.doy.R
 e28ee12b7113720826433da87fa95dac *R/pks.R
 d7696844acab467d28d39cc0feb8960f *R/pks.dur.R
-72165859e0d649d32465796a3073c0e7 *R/read.flows.R
+30e0704480b920b6907dc3a62e50a4b9 *R/read.flows.R
 e8bc1a0ce4d0e8b8c2b5bd0b1d5da9e9 *R/regime.R
 0f4c05c22ebb1f45875d97106d6dce13 *R/regime.internal.R
-f288df854ac175c99b5b186c4e997904 *R/screen.cpts.R
+3b3b429944d296fe44a34c18c06f4ea7 *R/screen.cpts.R
 6bd02a80e04cdf35e88ae27d8997c716 *R/screen.frames.R
 51c54af685d8b5248edc7dc237ef457a *R/screen.frames.internal.R
 30a6b3893117f19b84ca5bc079b33499 *R/screen.metric.R
@@ -76,7 +76,7 @@ b905b12337b15ac1e3a0ff3d06408fae *man/dr.pds.Rd
 7827bd1b37fb6a0b66c90d79f13dcb72 *man/pk.max.doy.Rd
 53ad147676b9d0128fc9e9be098e4252 *man/pks.Rd
 561d162cd9130168db605ba0f9fc465a *man/pks.dur.Rd
-a46259d8601f1e0a726602ead242fa3a *man/read.flows.Rd
+22f0110c5f1956ffce2dcbaca5b2191c *man/read.flows.Rd
 2696bc505b49f025657a7a725bdb33e0 *man/regime.Rd
 5ab2440384f25ea60669723bbf86fcd5 *man/screen.cpts.Rd
 61901e5bf005a6741b5b61279226fab8 *man/screen.frames.Rd

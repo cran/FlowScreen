@@ -12,7 +12,7 @@
 #' @author Jennifer Dierauer
 #' @export
 
-read.flows <- function(filename, convert=TRUE) {
+read.flows <- function(filename, convert=FALSE) {
 
     my.split <- unlist(strsplit(filename, ".", fixed=T))
     suff <- tolower(my.split[length(my.split)])

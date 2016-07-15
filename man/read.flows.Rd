@@ -4,7 +4,7 @@
 \alias{read.flows}
 \title{Read .csv or .Rdata file of streamflows}
 \usage{
-read.flows(filename, convert = TRUE)
+read.flows(filename, convert = FALSE)
 }
 \arguments{
 \item{filename}{name of .csv file to be read.}

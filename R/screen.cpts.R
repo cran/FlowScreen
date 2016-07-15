@@ -175,9 +175,16 @@ screen.cpts <- function(metrics, type="a", text=NULL) {
     CountsB <- CountsB[CountsB < YearLast - 1]
     CountsL <- CountsL[CountsL < YearLast - 1]
     
-    hv1 <- graphics::hist(CountsH, breaks=Year_List, plot=F)$counts
-    hv2 <- graphics::hist(CountsL, breaks=Year_List, plot=F)$counts
-    hv3 <- graphics::hist(CountsB, breaks=Year_List, plot=F)$counts
+    hv1 <- rep(0, length(Year_List))
+    hv2 <- rep(0, length(Year_List))
+    hv3 <- rep(0, length(Year_List))
+    
+    for (i in 1:length(Year_List)) {
+        hv1[i] <- length(CountsH[CountsH == Year_List[i]])
+        hv2[i] <- length(CountsL[CountsL == Year_List[i]])
+        hv3[i] <- length(CountsB[CountsB == Year_List[i]])
+    }
+    
     
     ## add histogram of changepoints
     if (type == "a") {
@@ -207,8 +214,7 @@ screen.cpts <- function(metrics, type="a", text=NULL) {
     
     graphics::legend("topright", legend = c("Missing Data Periods", types), col=c(polycol, mcol)
            , fill=c(polycol, mcol), bty="n")
-    
-    Year_List <- Year_List[1:(NumYears-1)]
+
     res <- data.frame(Year=Year_List, HighFlow=hv1, LowFlow=hv2, Baseflow=hv3)
     
     if (type == "a") {return(res)}
