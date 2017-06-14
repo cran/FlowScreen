@@ -120,17 +120,22 @@ metrics.all <- function(TS, Qmax=0.95, Dur=5,
         MinObs <- NAthresh * 365
         Year <- as.factor(TS$hyear)
         NumRecords<-tapply(TS$Flow, Year, length)
-        YearList <- unique(Year)
-        YearList.sub <- YearList[NumRecords >= MinObs]
-        if (length(YearList.sub) != length(YearList)) {
-            YearTrim <- NumRecords[NumRecords < MinObs]
-            OmitYears <- data.frame(Years=attr(YearTrim, "names"), Observations=as.numeric(YearTrim))
+        YearList <- c(min(TS$hyear):max(TS$hyear))
+        keepers <- as.numeric(attr(NumRecords, "dimnames")[[1]][NumRecords >= MinObs])
+
+        if (length(keepers) != length(YearList)) {
+            YearTrim <- YearList[!(YearList %in% keepers)]
+            
+            OmitYears <- data.frame(Years=YearTrim, Observations=0)
+            for (m in 1:length(YearTrim)) {
+                OmitYears$Observations[m] <- length(TS$Flow[TS$hyear == YearTrim[m]])
+            }
             print("The following years were omitted from analysis due to insufficient data points:")
             print(OmitYears)
-            TS.sub <- TS[Year %in% YearList.sub,]
+            TS.sub <- TS[TS$hyear %in% keepers,]
             Year <- as.factor(TS.sub$year) # redo year factors
         } else {
-            OmitYears <- NA
+            OmitYears <- data.frame(Years="N/A", Observations="N/A")
             TS.sub <- TS
         }
         
@@ -203,25 +208,27 @@ metrics.all <- function(TS, Qmax=0.95, Dur=5,
         for (i in 1:length(Pdata)) {
             
             MyY <- Pdata[[i]]
-            MyX <- attr(MyY, "times")
             
-            ### format x values to work with plotting of sen slopes and change points
-            if (nchar(MyX[1]) > 5) {
+            if (!is.na(MyY[1])) {
+              MyX <- attr(MyY, "times")
+              
+              ### format x values to work with plotting of sen slopes and change points
+              if (nchar(MyX[1]) > 5) {
                 
                 Start <- as.Date(paste(Year1, "-01-01", sep=""))
                 MyX.mod <- c(1:length(MyX))
                 
                 for (j in 1:length(MyX)) {MyX.mod[j] <- (MyX[j]-Start)}
                 
-            } else {
+              } else {
                 
                 MyX.mod <- c(1:length(MyX))
                 for (j in 1:length(MyX)) {MyX.mod[j] <- (as.numeric(MyX[j]) - Year1) + 1}
-            }
-            
-            mrange <- max(MyY) - min(MyY)
-            
-            if (mrange > 0) {
+              }
+              
+              mrange <- max(MyY, na.rm=T) - min(MyY, na.rm=T)
+              
+              if (mrange > 0) {
                 slope <- zyp::zyp.sen(MyY~MyX.mod)
                 ci <- zyp::confint.zyp(slope)
                 ci1 <- ci[,2]
@@ -230,27 +237,37 @@ metrics.all <- function(TS, Qmax=0.95, Dur=5,
                 res <- zyp::zyp.trend.vector(MyY, x=MyX.mod, method="yuepilon")
                 slope <- c(res[[11]], res[[2]])
                 pval <- res[[6]]
-            } else {
+              } else {
                 slope <- NA
                 ci1 <- NA
                 ci2 <- NA
                 pval <- NA
-            }
-            
-            if (length(MyY) > 3) {
+              }
+              
+              if (length(MyY) > 3) {
                 out <- suppressWarnings(changepoint::cpt.meanvar(as.numeric(MyY), 
-                                                    penalty="Asymptotic",
-                                                    pen.value=0.05,
-                                                    method="BinSeg"))
+                                                                 penalty="Asymptotic",
+                                                                 pen.value=0.05,
+                                                                 method="BinSeg"))
                 MyCpts <- out@cpts
                 attr(MyCpts, "times") <- MyX[MyCpts]
                 MyMeans <- out@param.est$mean
-            } else {
+              } else {
                 MyCpts <- NA
                 MyMeans <- NA
+              }
+              
+              NumObs <- length(MyX.mod)
+            } else {
+              slope <- NA
+              ci1 <- NA
+              ci2 <- NA
+              pval <- NA
+              MyCpts <- NA
+              MyMeans <- NA
+              NumObs <- NA
             }
-                
-            NumObs <- length(MyX.mod)
+ 
             
             params.sub <- list(MetricID=i, MetricName=MyTitles[i], Slope=slope, ci1=ci1, ci2=ci2,
                                pval=pval, cpts=MyCpts, means=MyMeans, NumObs=NumObs)

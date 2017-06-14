@@ -122,7 +122,21 @@ dr.events <- function(TS, Qdr=0.2, WinSize=30, IntEventDur=10, EventDur=15) {
         
         output <- list(DroughtEvents=DroughtEvents, DroughtPDS=myPDS)
         
-    } else {output <- list(DroughtEvents=NA, DroughtPDS=NA)}
+    } else {
+      dstats <- data.frame(Event=NA, 
+                           Start=NA,
+                           End=NA,
+                           maxDef=NA, 
+                           Severity=NA,
+                           Duration=NA,
+                           Magnitude=NA,
+                           stdtotDef=NA)
+      myPDS <- TS[1,]
+      myPDS[,] <- NA
+      
+      output <- list(DroughtEvents=dstats, DroughtPDS=myPDS)
+      
+    }
 
 return(output)
 

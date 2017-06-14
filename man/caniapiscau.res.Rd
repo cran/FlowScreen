@@ -31,4 +31,3 @@ caniapiscau.res <- metrics.all(caniapiscau.ts)
 data(caniapiscau.res)
 }
 \keyword{datasets}
-

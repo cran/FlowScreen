@@ -2,6 +2,10 @@
 #' 
 #' This function finds the start, middle, end, and duration of the baseflow
 #' peak based on percent of the total annual baseflow volume.
+#' A value of 0 is returned for years with no flow. Hydrologic 
+#' years with fewer than normal observations (outliers) are excluded from the 
+#' analysis, and for stations with seasonal flow records, additional seasonal 
+#' subsetting is done to include only days with observations in all years.
 #' @param TS output from \code{\link{create.ts}} containing a data.frame of flow
 #'   time series
 #' @param bfpct numeric vector of percentages used to define the 
@@ -30,8 +34,20 @@
 
 pk.bf.stats <- function(TS, bfpct=c(25,50,75)) {
     
-    #create factors for year
-    Year <- as.factor(TS$hyear)
+  NumRecords <- tapply(TS$Flow, TS$hyear, length)
+  outliers <- grDevices::boxplot.stats(NumRecords)$out
+  if (length(outliers) > 0) {
+    outliers <- outliers[outliers < stats::median(NumRecords)]
+    if (length(outliers) > 0) {
+      YearList <- attr(NumRecords, "dimnames")[[1]][NumRecords > max(outliers)]
+      TS <- TS[TS$hyear %in% YearList, ]
+    }
+  }
+  
+  ##### use only doys that are in every year
+  doy.list <- tapply(TS$Flow, TS$doy, length)
+  doy.list <- attr(doy.list, "dimnames")[[1]][doy.list >= stats::median(doy.list)]
+  TS <- subset(TS, TS$doy %in% doy.list)
     
     ### Set parameter values for Eckhardt RDF
     BFindex <- 0.8
@@ -42,66 +58,59 @@ pk.bf.stats <- function(TS, bfpct=c(25,50,75)) {
     temp$ro <- temp$Flow - bf_eckhardt(temp$Flow, alpha, BFindex)
     
     ## calculate 10%, 50%, and 90% of annual baseflow volume
-    BFVy <- array(data=NA, c(max(as.numeric(Year)),length(bfpct)+1))
+    BFVy <- array(data=NA, c(length(unique(temp$hyear)), length(bfpct) + 1))
     colnames(BFVy) <- c("Sum", bfpct)
-    BFVy[,1] <- tapply(temp$ro, Year, sum)
-    Output <- data.frame(1:length(unique(Year)))
+    BFVy[,1] <- tapply(temp$ro, temp$hyear, sum)
+
     for (i in 1:length(bfpct)) {
-        BFVy[,i+1]<-BFVy[,1]*(bfpct[i]/100)
-        Output[,i] <- NA 
+        BFVy[,i+1] <- BFVy[,1] * (bfpct[i]/100)
     }
     
-    colnames(Output) <- bfpct
+    output <- data.frame(BFVy[,c(2:ncol(BFVy))])
+    colnames(output) <- bfpct
     
-    YearStack <- split(temp, Year)  #split into dataframes by year for looping
+    YearStack <- split(temp, temp$hyear)  #split into dataframes by year for looping
     
     for (i in 1:length(YearStack)) { #loop through years
         
+      if (BFVy[i, 1] == 0) { # if no baseflow in hyear, return 0
+        output[i, ] <- 0
+      } else {
         Have10 <- FALSE
         Have50 <- FALSE
         Have90 <- FALSE
         mysum <- 0
-        temp <- YearStack[[i]]
+        temp.sub <- YearStack[[i]]
         j <- 0
         
-        if (sum(temp$Flow) > 0) {
-            while (Have90 == FALSE) { #loop through days until Q90 value is reached
-                j <- j+1
-                
-                mysum <- mysum + temp$ro[j]
-                
-                if (mysum > BFVy[i,2] & Have10 == FALSE){
-                    Have10 <- TRUE
-                    Output[i,1] <- as.character(temp$Date[j])}
-                
-                else if (mysum > BFVy[i,3] & Have50 == FALSE){
-                    Have50 <- TRUE
-                    Output[i,2] <- as.character(temp$Date[j])}
-                
-                else if (mysum > BFVy[i,4] & Have90 == FALSE){
-                    Have90 <- TRUE
-                    Output[i,3] <- as.character(temp$Date[j])}
-            }
-        } else {
-            Output[i,c(1:3)] <- NA
+        while (Have90 == FALSE) { #loop through days until Q90 value is reached
+          j <- j + 1
+          
+          mysum <- mysum + temp.sub$ro[j]
+          
+          if (mysum > BFVy[i,2] & Have10 == FALSE) {
+            Have10 <- TRUE
+            output[i,1] <- as.numeric(format(temp.sub$Date[j], "%j"))
+          } else if (mysum > BFVy[i,3] & Have50 == FALSE) {
+            Have50 <- TRUE
+            output[i,2] <- as.numeric(format(temp.sub$Date[j], "%j"))
+          } else if (mysum > BFVy[i,4] & Have90 == FALSE) {
+            Have90 <- TRUE
+            output[i,3] <- as.numeric(format(temp.sub$Date[j], "%j"))
+          }
+          
         }
-    }
-    
-    
-    #change character dates to doy for plotting
-    for (i in 1:3) {
-        temp <- as.Date(Output[,i],format="%Y-%m-%d")
-        Output[,i] <- as.numeric(format(temp, "%j"))
+      }
     }
     
     #calculate spring flood duration
-    Output$Dur<-Output[,3] - Output[,1]
+    output$Dur <- output[,3] - output[,1]
     
     for (i in 1:4) {
-        attr(Output[,i], "times") <- as.character(unique(Year))
+        attr(output[,i], "times") <- as.character(unique(temp$hyear))
     }
     
-    colnames(Output) <- c("Start", "Mid", "End", "Dur")
-    return(Output)
+    colnames(output) <- c("Start", "Mid", "End", "Dur")
+    return(output)
     
 }

@@ -39,4 +39,3 @@ res2 <- screen.metric(res, "Peak Over Threshold (m3/s)")
 \author{
 Jennifer Dierauer
 }
-

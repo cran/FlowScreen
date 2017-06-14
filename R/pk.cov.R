@@ -2,7 +2,10 @@
 #' 
 #' This function calculates center of volume metrics, including the day of the 
 #' hydrologic year that 25 percent, 50 percent, and 75 percent of the total annual 
-#' streamflow is reached. 
+#' streamflow is reached. A value of 0 is returned for years with no flow. Hydrologic 
+#' years with fewer than normal observations (outliers) are excluded from the 
+#' analysis, and for stations with seasonal flow records, additional seasonal 
+#' subsetting is done to include only days with observations in all years.
 #' @param TS output from \code{\link{create.ts}} containing a data.frame of flow
 #'   time series
 #' @return Returns a data.frame with the following columns:
@@ -24,11 +27,20 @@
 
 pk.cov <- function(TS) {
     
-    Year <- as.factor(TS$hyear)
-    NumRecords<-tapply(TS$Flow, Year, length)
-    YearList <- unique(Year)
-    YearList.sub <- YearList[NumRecords >= 60]
-    TS <- TS[Year %in% YearList.sub,]
+    NumRecords <- tapply(TS$Flow, TS$hyear, length)
+    outliers <- grDevices::boxplot.stats(NumRecords)$out
+    if (length(outliers) > 0) {
+      outliers <- outliers[outliers < stats::median(NumRecords)]
+      if (length(outliers) > 0) {
+        YearList <- attr(NumRecords, "dimnames")[[1]][NumRecords > max(outliers)]
+        TS <- TS[TS$hyear %in% YearList, ]
+      }
+    }
+    
+    ##### use only doys that are in every year
+    doy.list <- tapply(TS$Flow, TS$doy, length)
+    doy.list <- attr(doy.list, "dimnames")[[1]][doy.list >= stats::median(doy.list)]
+    TS <- subset(TS, TS$doy %in% doy.list)
     
     #create factors for year
     Year <- as.factor(TS$hyear)
@@ -60,24 +72,24 @@ pk.cov <- function(TS) {
                 j <- j+1      
                 mysum <- mysum + temp$Flow[j]
                 
-                if (mysum > q25 & Have25 == FALSE){
+                if ((mysum > q25) & (Have25 == FALSE)) {
                     Have25 <- TRUE
                     out[i,2] <- as.numeric(temp$hdoy[j])
                 }
                 
-                else if (mysum > q50 & Have50 == FALSE){
+                else if ((mysum > q50) & (Have50 == FALSE)) {
                     Have50 <- TRUE
                     out[i,3] <- as.numeric(temp$hdoy[j])
                 }
                 
-                else if (mysum > q75 & Have75 == FALSE){
+                else if ((mysum > q75 & Have75 == FALSE)) {
                     Have75 <- TRUE
                     out[i,4] <- as.numeric(temp$hdoy[j])
                 }
             }
                 
         } else {
-            out[i,c(2:4)] <- NA
+            out[i,c(2:4)] <- 0
         }
     }
     

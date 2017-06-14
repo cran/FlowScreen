@@ -23,7 +23,10 @@ Returns a data.frame with the following columns:
 \description{
 This function calculates center of volume metrics, including the day of the 
 hydrologic year that 25 percent, 50 percent, and 75 percent of the total annual 
-streamflow is reached.
+streamflow is reached. A value of 0 is returned for years with no flow. Hydrologic 
+years with fewer than normal observations (outliers) are excluded from the 
+analysis, and for stations with seasonal flow records, additional seasonal 
+subsetting is done to include only days with observations in all years.
 }
 \examples{
 data(cania.sub.ts)
@@ -35,4 +38,3 @@ res2 <- screen.metric(res1[,2], "Day of Year")
 \author{
 Jennifer Dierauer
 }
-

@@ -65,13 +65,12 @@ res1 <- dr.events(cania.sub.ts)
 events <- res1$DroughtEvents
 plot(events$Start, events$Duration, pch=19, ylab="Drought Duration (days)", xlab="")
 }
-\author{
-Jennifer Dierauer
-}
 \seealso{
 See \code{\link{dr.seas}} to calculate metrics for droughts 
   occurring in a user-defined season.
   
   This function calls \code{\link{dr.pds}} which calls \code{\link{mqt}}.
 }
-
+\author{
+Jennifer Dierauer
+}

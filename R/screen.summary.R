@@ -22,6 +22,9 @@
 #'   of whether or not the temporal trend in COV is meaningful. See Whitfield (2013) for a
 #'   discussion of COV.
 #'   
+#'   Drought metrics for the low flow plot may not be applicable to intermittent streams, and
+#'   plots will be empty in this case.
+#'   
 #'   Important note:  If "French" is the language wanted for the plot labels, the language
 #'   option must also be specified in \code{\link{metrics.all}}, as this plotting function 
 #'   pulls the metric names from the output metrics.all output.
@@ -157,20 +160,19 @@ screen.summary <- function(metrics, type="h", language="English", StnInfo=NULL) 
     omityrs <- metrics[[4]]$Years
     Year1 <- min(c(as.numeric(TS$hyear[1]), as.numeric(TS$year[1])))
     YearEnd <- max(c(max(as.numeric(TS$year)), max(as.numeric(TS$hyear))))
-    hyrstart <- as.numeric(subset(TS, TS$hmonth==1)$month[1])
-    
-    while (YearEnd %in% omityrs) {
-        YearEnd <- YearEnd - 1
-    }
-    while (Year1 %in% omityrs) {
-        Year1 <- Year1 + 1
-    }
+    hyrstart <- as.numeric(subset(TS, TS$hmonth == 1)$month[1])
     
     ## Plots 4 to 13
     for (i in 1:10) {
         
-        screen.summary.internal(inmetrics[[i]], inparams[[i]], type, 
-                                   MyYlabs, i, DataType, maf, Year1, YearEnd, hyrstart)
+      if (!is.na(inmetrics[[i]][1])) {
+          screen.summary.internal(inmetrics[[i]], inparams[[i]], type, 
+                                     MyYlabs, i, DataType, maf, Year1, YearEnd, hyrstart)
+      } else {
+        graphics::plot(c(1:10), c(1:10), col="white", ylab="", xlab="", yaxt="n", xaxt="n")
+        graphics::text(1, 5, inparams[[i]][[2]], adj=c(0, 0))
+        graphics::text(x = 1, y = 3, "NA", adj=c(0, 0))
+      }
     }
 
     on.exit(suppressWarnings(graphics::par(opar)))

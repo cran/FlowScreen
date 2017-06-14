@@ -25,6 +25,10 @@ Returns a data.frame with the following columns:
 \description{
 This function finds the start, middle, end, and duration of the baseflow
 peak based on percent of the total annual baseflow volume.
+A value of 0 is returned for years with no flow. Hydrologic 
+years with fewer than normal observations (outliers) are excluded from the 
+analysis, and for stations with seasonal flow records, additional seasonal 
+subsetting is done to include only days with observations in all years.
 }
 \details{
 This function calculates metrics intended to focus on snowmelt-related
@@ -43,4 +47,3 @@ res2 <- screen.metric(res1[,1], "Day of Year")
 \author{
 Jennifer Dierauer
 }
-

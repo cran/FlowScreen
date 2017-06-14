@@ -42,6 +42,8 @@ bf.stats <- function(TS, by="hyear") {
     temp <- subset(TS, !is.na(TS$Flow))
     temp$bf <- bf_eckhardt(temp$Flow, alpha, BFindex)  
     temp$bfi <- temp$bf/temp$Flow
+    temp$bfi[(temp$bf == 0) & (temp$Flow == 0)] <- 0
+
     
     #create factors
     if (by=="hyear") {SumBy <- as.factor(temp$hyear)}

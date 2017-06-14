@@ -58,12 +58,11 @@ data(cania.sub.ts)
 res <- dr.seas(cania.sub.ts)
 res2 <- screen.metric(res[,1], "Day of Year")
 }
-\author{
-Jennifer Dierauer
-}
 \seealso{
 See \code{\link{create.ts}} to format the input flow series. \cr
   See \code{\link{dr.events}} and \code{\link{mqt}} for details on how drought 
   events are defined.
 }
-
+\author{
+Jennifer Dierauer
+}

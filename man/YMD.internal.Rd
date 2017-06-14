@@ -18,4 +18,3 @@ Add calendar year, month, and day of year columns
 \author{
 Jennifer Dierauer
 }
-

@@ -58,9 +58,6 @@ res <- MAMn(cania.sub.ts, n=1)
 res1 <- screen.metric(res, ylabel="Discharge (m3/s)", 
 text="Caniapiscau River, Annual Minimum Series")
 }
-\author{
-Jennifer Dierauer
-}
 \seealso{
 See \code{\link{screen.summary}} to create a summary screening plot of 
   high flow, low flow, or baseflow metrics.
@@ -69,4 +66,6 @@ See \code{\link{screen.summary}} to create a summary screening plot of
   The \code{\link{screen.metric}} function could then be used to loop through the metrics and 
   create an individual plot for each.
 }
-
+\author{
+Jennifer Dierauer
+}

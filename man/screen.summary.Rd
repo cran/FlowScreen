@@ -36,6 +36,9 @@ For the center of volume (COV) plots on the high flow and baseflow screening plo
   of whether or not the temporal trend in COV is meaningful. See Whitfield (2013) for a
   discussion of COV.
   
+  Drought metrics for the low flow plot may not be applicable to intermittent streams, and
+  plots will be empty in this case.
+  
   Important note:  If "French" is the language wanted for the plot labels, the language
   option must also be specified in \code{\link{metrics.all}}, as this plotting function 
   pulls the metric names from the output metrics.all output.
@@ -47,11 +50,10 @@ data(caniapiscau.res)
 # create a summary flow screening plot of the high flow metrics
 screen.summary(caniapiscau.res, type="l")
 }
-\author{
-Jennifer Dierauer
-}
 \references{
 Whitfield, P.H. 2013. Is 'Center of Volume' a robust indicator of changes 
   in snowmelt timing? Hydrological Processes 27:2691-8.
 }
-
+\author{
+Jennifer Dierauer
+}

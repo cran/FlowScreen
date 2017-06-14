@@ -21,7 +21,7 @@ data(caniapiscau)
 }
 \description{
 This data set includes the mean daily streamflow for the Caniapiscau
-  River. The file has been read from it's original .csv format using  
+  River. The file has been read from the original .csv format using  
   \code{\link{read.flows}}. The Caniapiscau River is located in Nunavik, Quebec,
   Canada, and flows northward. The headwaters (representing 45 percent of the 
   total flow) were dammed to create the Caniapiscau Reservoir, which started 
@@ -36,4 +36,3 @@ head(caniapiscau)
 str(caniapiscau)
 }
 \keyword{datasets}
-

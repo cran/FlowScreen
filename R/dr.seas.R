@@ -48,7 +48,13 @@ dr.seas <- function(TS, Qdr=0.2, WinSize=30, IntEventDur=10, EventDur=15,
     
     res <- dr.events(TS, Qdr, WinSize, IntEventDur, EventDur)
     
-    if (length(res[[1]]) == 1) {output=NA} else {
+    if (is.na(res$DroughtEvents[1,1])) {
+      output <- data.frame(StartDay=NA,
+                           MidDay=NA,
+                           EndDay=NA,
+                           Duration=NA,
+                           Severity=NA)
+    } else {
         
         DroughtEvents <- res[[1]]
         DroughtPDS <- res[[2]]
@@ -66,7 +72,7 @@ dr.seas <- function(TS, Qdr=0.2, WinSize=30, IntEventDur=10, EventDur=15,
             MidPoint <- as.numeric(0.5*DroughtEvents.season$Severity[i])
             temp <- PDS.season[PDS.season$Event %in% EventList[i],]
             HaveMid <- FALSE
-            j<-1
+            j <- 1
             mDef <- 0
             while (HaveMid == FALSE) {
                 mDef <- mDef + (temp$Def[j])

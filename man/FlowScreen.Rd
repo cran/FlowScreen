@@ -15,7 +15,7 @@ that may have anthropogenic impacts or data inhomogeneity.
 \tabular{ll}{
 Package: \tab FlowScreen\cr
 Type: \tab Package\cr
-Version: \tab 1.2\cr
+Version: \tab 1.2.2\cr
 Date: \tab 2016-06-21\cr
 License: \tab GPL (>= 2)\cr
 }

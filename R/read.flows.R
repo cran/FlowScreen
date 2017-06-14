@@ -8,7 +8,8 @@
 #' sometimes used to denote missing data with NAs.
 #' @param filename name of .csv file to be read.
 #' @param convert Boolean indicating whether or not to convert USGS flow values
-#'   from cubic feet per second to cubic meters per second.
+#'   from cubic feet per second to cubic meters per second. (Axes are automatically 
+#'   labeled in cubic meters per second)
 #' @author Jennifer Dierauer
 #' @export
 
