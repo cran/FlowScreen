@@ -19,3 +19,4 @@ Returns plot titles and labels based on plot type and language preference
 \author{
 Jennifer Dierauer
 }
+

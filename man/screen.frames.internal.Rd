@@ -36,3 +36,4 @@ Internal wrapper for creating trend and change-point plots
 \author{
 Jennifer Dierauer
 }
+

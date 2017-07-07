@@ -30,9 +30,10 @@ data(cania.sub.ts)
 res <- bf.seas(cania.sub.ts)
 res2 <- screen.metric(res, "Percent Annual Baseflow in Jun-Aug")
 }
-\seealso{
-See \code{\link{bf.stats}} to calculate additional baseflow metrics.
-}
 \author{
 Jennifer Dierauer
 }
+\seealso{
+See \code{\link{bf.stats}} to calculate additional baseflow metrics.
+}
+

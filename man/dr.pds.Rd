@@ -47,6 +47,9 @@ pds <- subset(pds, pds$BelowThresh==TRUE)
 plot(cania.sub.ts$Date, cania.sub.ts$Flow, ylab="m3/s", xlab="", type="l")
 points(pds$Date, pds$Flow, pch=19, cex=0.7, col="red")
 }
+\author{
+Jennifer Dierauer
+}
 \references{
 Beyene, B.S., Van Loon, A.F., Van Lanen, H.A.J., Torfs, P.J.J.F., 2014. 
   Investigation of variable threshold level approaches for hydrological drought 
@@ -64,6 +67,4 @@ See \code{\link{create.ts}} to format the input flow series.
   See \code{\link{dr.seas}} to calculate metrics for streamflow droughts 
   that start in a specific month or months.
 }
-\author{
-Jennifer Dierauer
-}
+

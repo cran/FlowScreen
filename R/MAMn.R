@@ -37,7 +37,7 @@ MAMn <- function(TS, n=7, by="hyear") {
         out[i] <- max(temp$Flow, na.rm=TRUE)
         
         for (j in 1:(length(temp$Flow)-n)) {
-            checkmin <- mean(temp$Flow[j:j+(n-1)], na.rm=TRUE)
+            checkmin <- mean(temp$Flow[j:(j + (n - 1))], na.rm=TRUE)
             if (j > 1) {
                 if (checkmin < out[i]) {out[i] <- checkmin}
             }

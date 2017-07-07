@@ -24,12 +24,13 @@ data(cania.sub.ts)
 res <- pk.max(cania.sub.ts)
 res2 <- screen.metric(res, "Q (m3/s)")
 }
+\author{
+Jennifer Dierauer
+}
 \seealso{
 See \code{\link{create.ts}} to format the input flow series.
 
   See \code{\link{pk.max.doy}} to find the day of year for each annual
   maximum flow event.
 }
-\author{
-Jennifer Dierauer
-}
+
