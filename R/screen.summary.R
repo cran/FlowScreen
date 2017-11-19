@@ -159,7 +159,8 @@ screen.summary <- function(metrics, type="h", language="English", StnInfo=NULL) 
         
     omityrs <- metrics[[4]]$Years
     Year1 <- min(c(as.numeric(TS$hyear[1]), as.numeric(TS$year[1])))
-    YearEnd <- max(c(max(as.numeric(TS$year)), max(as.numeric(TS$hyear))))
+    YearEnd <- max(c(max(as.numeric(TS$year[!(TS$year %in% omityrs)])), 
+                     max(as.numeric(TS$hyear[!(TS$hyear %in% omityrs)]))))
     hyrstart <- as.numeric(subset(TS, TS$hmonth == 1)$month[1])
     
     ## Plots 4 to 13

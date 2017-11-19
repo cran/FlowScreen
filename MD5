@@ -1,4 +1,4 @@
-dcde75c37c7dc7e9d9e0c422fe0b9407 *DESCRIPTION
+4b4f58586dff97bfb70aa07b5ac46e4a *DESCRIPTION
 531d0700d3d399ba9b2e56df68c7c1f1 *NAMESPACE
 c2043007146347103338deedbcf666ce *R/FDC.R
 36208b3417c9d7a991339d2d31ca7214 *R/MAMn.R
@@ -21,7 +21,7 @@ fe6957f798086c60863f900b6fce6a0a *R/dr.pds.R
 8a24dec7f029fa3a79f9547da91b0471 *R/dr.seas.R
 d2c4f89a8c7ca9c8d9b1c7bd8d3ff16f *R/get.station.internal.r
 64af179492b352ba757deb83d9553696 *R/get.titles.internal.R
-b037e167d11998a67a25a7c501d97e09 *R/hyear.internal.r
+a316ee656144c85d1e41bc6a62e01bea *R/hyear.internal.r
 ce8b0993f3c70d72fdc32657d2cef7c9 *R/metrics.all.R
 b89fecdba0d36c6abcb6607e88aa7179 *R/mqt.r
 e0ae40dd48e464ed50a6c609a10a9efb *R/pk.bf.stats.R
@@ -38,7 +38,7 @@ e8bc1a0ce4d0e8b8c2b5bd0b1d5da9e9 *R/regime.R
 51c54af685d8b5248edc7dc237ef457a *R/screen.frames.internal.R
 30a6b3893117f19b84ca5bc079b33499 *R/screen.metric.R
 cb8353bc3c05fed6a2e7fa458bebf888 *R/screen.series.R
-65b4f6f1481e398849f6b018244a4a62 *R/screen.summary.R
+030f752d2f3bb91df76d327d7cce874e *R/screen.summary.R
 51554592942fce95873659ef35cfc76a *R/screen.summary.internal.R
 a23ab941b644eeff419550b01653cd55 *R/station.info.R
 17bb053b744581094bc23b3f9ca44e8e *R/sysdata.rda
@@ -46,7 +46,7 @@ a23ab941b644eeff419550b01653cd55 *R/station.info.R
 c297586ff137670a022a99bd6cbd534c *data/caniapiscau.rda
 3e60b4d54607ccac933110e091e2355b *data/caniapiscau.res.rda
 f73e00eae8b47684ffa9aafc4e3e8cb1 *man/FDC.Rd
-176af599d8494266ca8b07cca1661914 *man/FlowScreen.Rd
+b09978a2c66f3b40ba5a73195d8c944d *man/FlowScreen.Rd
 b25a3604afc424bcd2ef8ca5da846ee8 *man/MAMn.Rd
 4aec315996065e79e5e342c83d24dc19 *man/NA.runs.Rd
 c4c2ed6473789b99fdf84d298b6f762e *man/NA.sum.Rd
