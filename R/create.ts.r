@@ -18,6 +18,9 @@
 
 create.ts <- function(Flows, hyrstart=10) {
     
+  # remove any rows with NA valuse for the date
+  Flows <- Flows[!is.na(Flows$Date),]
+  
     numobs <- length(Flows$Flow)
     mseq <- seq(from=Flows$Date[1], to=Flows$Date[numobs], by=1)
     mseq <- data.frame(Date=mseq, Flow=NA)

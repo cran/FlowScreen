@@ -46,4 +46,3 @@ StnInfo <- station.info(cania.sub.ts)
 \author{
 Jennifer Dierauer
 }
-

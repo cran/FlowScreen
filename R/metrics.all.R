@@ -144,7 +144,14 @@ metrics.all <- function(TS, Qmax=0.95, Dur=5,
         p2 <- pk.max.doy(TS.sub) # doy of annual max
         
         p3 <- pks(TS.sub, Dur, Qmax) # peaks over threshold
-        p4 <- pks.dur(p3) #inter event duration
+        
+        # if peaks over threshold returned NA - peaks over threshold duration also = NA
+        if (!is.na(p3[1])) {
+          p4 <- pks.dur(p3) #inter event duration
+        } else {
+          p4 <- NA
+        }
+
         p5 <- Qn(TS.sub, n=0.80) #Q80
         p6 <- Qn(TS.sub, n=0.90) #Q90
         
@@ -245,13 +252,22 @@ metrics.all <- function(TS, Qmax=0.95, Dur=5,
               }
               
               if (length(MyY) > 3) {
-                out <- suppressWarnings(changepoint::cpt.meanvar(as.numeric(MyY), 
-                                                                 penalty="Asymptotic",
-                                                                 pen.value=0.05,
-                                                                 method="BinSeg"))
-                MyCpts <- out@cpts
-                attr(MyCpts, "times") <- MyX[MyCpts]
-                MyMeans <- out@param.est$mean
+                
+                out <- tryCatch(suppressWarnings(changepoint::cpt.meanvar(as.numeric(MyY), 
+                                                                   penalty="Asymptotic",
+                                                                   pen.value=0.05,
+                                                                   method="BinSeg")), 
+                         error = function(e) NA)
+                
+                if (class(out) == "cpt.range") {
+                  MyCpts <- out@cpts
+                  attr(MyCpts, "times") <- MyX[MyCpts]
+                  MyMeans <- out@param.est$mean
+                } else {
+                  MyCpts <- NA
+                  MyMeans <- NA
+                }
+
               } else {
                 MyCpts <- NA
                 MyMeans <- NA

@@ -27,6 +27,7 @@
 
 pk.cov <- function(TS) {
     
+  # remove years with few observations
     NumRecords <- tapply(TS$Flow, TS$hyear, length)
     outliers <- grDevices::boxplot.stats(NumRecords)$out
     if (length(outliers) > 0) {
@@ -42,56 +43,37 @@ pk.cov <- function(TS) {
     doy.list <- attr(doy.list, "dimnames")[[1]][doy.list >= stats::median(doy.list)]
     TS <- subset(TS, TS$doy %in% doy.list)
     
-    #create factors for year
-    Year <- as.factor(TS$hyear)
+
+    year_list <- unique(TS$hyear)
     
-    year_list <- unique(Year)
-    
+    # set up data.frame to fill and return
     out <- data.frame(hYear=year_list, Q25=NA, Q50=NA, Q75=NA, Dur=NA)
     
-    YearStack <- split(TS, Year)  #split into dataframes by year for looping
+    # add cumulative sum column to time series
+    TS$cumsum <- NA
     
-    for (i in 1:length(YearStack)) { #loop through years
+
+    
+    for (i in 1:length(year_list)) { #loop through years
+      
+      # only look for 25, 50, and 75% of flow if year has flow > 0
+      if (sum(TS$Flow[TS$hyear == year_list[i]]) > 0) {
+        TS$cumsum[TS$hyear == year_list[i]] <- cumsum(TS$Flow[TS$hyear == year_list[i]]) / sum(TS$Flow[TS$hyear == year_list[i]])
         
-        Have25 <- FALSE
-        Have50 <- FALSE
-        Have75 <- FALSE
-        mysum <- 0
-        temp <- YearStack[[i]]
-        j <- 0
+        doy.25 <- min(TS$hdoy[(TS$hyear == year_list[i]) & (TS$cumsum >= 0.25)])
+        doy.50 <- min(TS$hdoy[(TS$hyear == year_list[i]) & (TS$cumsum >= 0.50)])
+        doy.75 <- min(TS$hdoy[(TS$hyear == year_list[i]) & (TS$cumsum >= 0.75)])
         
-        total.flow <- sum(temp$Flow)
-        q25 <- total.flow * 0.25
-        q50 <- total.flow * 0.5
-        q75 <- total.flow * 0.75
+        out[i,2] <- as.numeric(doy.25)
+        out[i,3] <- as.numeric(doy.50)
+        out[i,4] <- as.numeric(doy.75)
         
-        if (total.flow > 0) {
         
-            while (Have75 == FALSE) { #loop through days until 75% is reached
-                
-                j <- j+1      
-                mysum <- mysum + temp$Flow[j]
-                
-                if ((mysum > q25) & (Have25 == FALSE)) {
-                    Have25 <- TRUE
-                    out[i,2] <- as.numeric(temp$hdoy[j])
-                }
-                
-                else if ((mysum > q50) & (Have50 == FALSE)) {
-                    Have50 <- TRUE
-                    out[i,3] <- as.numeric(temp$hdoy[j])
-                }
-                
-                else if ((mysum > q75 & Have75 == FALSE)) {
-                    Have75 <- TRUE
-                    out[i,4] <- as.numeric(temp$hdoy[j])
-                }
-            }
-                
-        } else {
-            out[i,c(2:4)] <- 0
-        }
-    }
+      } else {
+          out[i,c(2:4)] <- 0
+      }
+      
+    } # end of year loop
     
     out$Dur <- out[,4] - out[,2]
     

@@ -54,63 +54,48 @@ pk.bf.stats <- function(TS, bfpct=c(25,50,75)) {
     alpha <- 0.970 ##based on values suggested by Eckhardt 2012 for perrennial stream
     
     ## calculate daily BF and BFI
-    temp <- TS
-    temp$ro <- temp$Flow - bf_eckhardt(temp$Flow, alpha, BFindex)
+    TS$base <- bf_eckhardt(TS$Flow, alpha, BFindex)
     
-    ## calculate 10%, 50%, and 90% of annual baseflow volume
-    BFVy <- array(data=NA, c(length(unique(temp$hyear)), length(bfpct) + 1))
-    colnames(BFVy) <- c("Sum", bfpct)
-    BFVy[,1] <- tapply(temp$ro, temp$hyear, sum)
+    TS$cumsum <- NA
+    year_list <- unique(TS$hyear)
+    
+    # setup output data.frame
+    out <- as.data.frame(array(data = NA, dim = c(length(year_list), length(bfpct))))
+    colnames(out) <- bfpct
+    
+    # convert percent to fraction for searching
+    bfpct <- bfpct / 100
+    
+    
+    # add cumulative sum column to time series
 
-    for (i in 1:length(bfpct)) {
-        BFVy[,i+1] <- BFVy[,1] * (bfpct[i]/100)
-    }
     
-    output <- data.frame(BFVy[,c(2:ncol(BFVy))])
-    colnames(output) <- bfpct
-    
-    YearStack <- split(temp, temp$hyear)  #split into dataframes by year for looping
-    
-    for (i in 1:length(YearStack)) { #loop through years
+    for (i in 1:length(year_list)) { #loop through years
+      
+      # only look for day of each percent if baseflow > 0 for the year
+      if (sum(TS$base[TS$hyear == year_list[i]]) > 0) {
         
-      if (BFVy[i, 1] == 0) { # if no baseflow in hyear, return 0
-        output[i, ] <- 0
-      } else {
-        Have10 <- FALSE
-        Have50 <- FALSE
-        Have90 <- FALSE
-        mysum <- 0
-        temp.sub <- YearStack[[i]]
-        j <- 0
+        TS$cumsum[TS$hyear == year_list[i]] <- cumsum(TS$base[TS$hyear == year_list[i]]) / sum(TS$base[TS$hyear == year_list[i]])
         
-        while (Have90 == FALSE) { #loop through days until Q90 value is reached
-          j <- j + 1
-          
-          mysum <- mysum + temp.sub$ro[j]
-          
-          if (mysum > BFVy[i,2] & Have10 == FALSE) {
-            Have10 <- TRUE
-            output[i,1] <- as.numeric(format(temp.sub$Date[j], "%j"))
-          } else if (mysum > BFVy[i,3] & Have50 == FALSE) {
-            Have50 <- TRUE
-            output[i,2] <- as.numeric(format(temp.sub$Date[j], "%j"))
-          } else if (mysum > BFVy[i,4] & Have90 == FALSE) {
-            Have90 <- TRUE
-            output[i,3] <- as.numeric(format(temp.sub$Date[j], "%j"))
-          }
-          
+        for (b in 1:length(bfpct)) {
+          out[i, b] <- min(TS$doy[(TS$hyear == year_list[i]) & (TS$cumsum >= bfpct[b])])
         }
+
+      } else {
+        out[i,c(1:length(bfpct))] <- 0
       }
-    }
+      
+    } # end of year loop
     
+
     #calculate spring flood duration
-    output$Dur <- output[,3] - output[,1]
+    out$Dur <- out[, which.max(bfpct)] - out[, which.min(bfpct)]
     
     for (i in 1:4) {
-        attr(output[,i], "times") <- as.character(unique(temp$hyear))
+        attr(out[,i], "times") <- as.character(unique(TS$hyear))
     }
     
-    colnames(output) <- c("Start", "Mid", "End", "Dur")
-    return(output)
+    colnames(out) <- c("Start", "Mid", "End", "Dur")
+    return(out)
     
 }

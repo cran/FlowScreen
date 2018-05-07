@@ -31,10 +31,9 @@ cania.ts <- create.ts(cania.sub)
 res <- NA.runs(cania.ts)
 res2 <- NA.sum(res)
 }
-\author{
-Jennifer Dierauer
-}
 \seealso{
 \code{\link{NA.runs}}
 }
-
+\author{
+Jennifer Dierauer
+}

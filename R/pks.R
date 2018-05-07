@@ -26,15 +26,20 @@ pks <- function(TS, Dur=5, Qmax=0.95) {
     
     MyThreshold <- stats::quantile(TS$Flow, Qmax, na.rm=TRUE)
     
-    Flow<-TS$Flow
+    Flow <- TS$Flow
     attr(Flow, "times") <- TS$Date
     attr(Flow, "names") <- paste(TS$hyear, TS$hdoy, sep=" ")
     
     ##Find Peaks Over Threshold
-    Peaks <- evir::pot(Flow, MyThreshold, picture=F)
-    
-    ##Remove minor peaks using input "duration" between peaks
-    Peaks <- evir::decluster(Peaks$data, Dur, picture=F)
-    Peaks <- Peaks - MyThreshold
+    Peaks <- tryCatch(evir::pot(Flow, MyThreshold, picture=F), 
+                      error = function(e) NA)
+    if (class(Peaks) == "potd") {
+      ##Remove minor peaks using input "duration" between peaks
+      Peaks <- evir::decluster(Peaks$data, Dur, picture=F)
+      Peaks <- Peaks - MyThreshold
+    } else {
+      Peaks <- NA
+    }
+
     return(Peaks)
 }

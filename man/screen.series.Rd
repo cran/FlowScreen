@@ -36,4 +36,3 @@ screen.series(cania.sub.ts)
 \author{
 Jennifer Dierauer and Paul Whitfield
 }
-

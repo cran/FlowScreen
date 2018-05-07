@@ -27,4 +27,3 @@ res3 <- screen.metric(res2, "Inter-Event Duration (days)")
 \author{
 Jennifer Dierauer
 }
-

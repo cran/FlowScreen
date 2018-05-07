@@ -7,7 +7,7 @@
 #' @author Jennifer Dierauer
 
 
-hyear.internal <- function(TS, hyrstart=1) {
+hyear.internal <- function(TS, hyrstart=10) {
     
     TS$hyear <- TS$year
     TS$hmonth <- TS$month
@@ -33,8 +33,20 @@ hyear.internal <- function(TS, hyrstart=1) {
     
     yr.list <- unique(TS$hyear) 
     
+    
     for (y in 1:length(yr.list)) {
-        TS$hdoy[TS$hyear == yr.list[y]] <- c(1:366)[1:length(TS$hdoy[TS$hyear == yr.list[y]])]
+      if (y > 1) {
+        TS$hdoy[TS$hyear %in% yr.list[y]] <- c(1:366)[1:length(TS$hdoy[TS$hyear %in% yr.list[y]])]
+      } else {
+        mlen <- nrow(TS[TS$hyear %in% yr.list[y], ])
+        if (length(seq(from = as.Date(paste(yr.list[y], "-01-01", sep = ""), format = "%Y-%m-%d"), 
+                       to = as.Date(paste(yr.list[y], "-12-31", sep = ""), format = "%Y-%m-%d"), by = 1)) > 365) {
+          TS$hdoy[TS$hyear %in% yr.list[y]] <- c((367-mlen):366)
+        } else {
+          TS$hdoy[TS$hyear %in% yr.list[y]] <- c((366-mlen):365)
+        }
+      }
+        
     }
  
     

@@ -4,7 +4,7 @@
 \alias{hyear.internal}
 \title{Add hydrologic Year, month, and doy columns to a daily time series}
 \usage{
-hyear.internal(TS, hyrstart = 1)
+hyear.internal(TS, hyrstart = 10)
 }
 \arguments{
 \item{TS}{Output from \code{\link{create.ts}} function.}
@@ -21,4 +21,3 @@ Add hydrologic Year, month, and doy columns to a daily time series
 \author{
 Jennifer Dierauer
 }
-

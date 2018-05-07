@@ -23,12 +23,11 @@ data(cania.sub.ts)
 res <- pk.max.doy(cania.sub.ts)
 res2 <- screen.metric(res, "Day of Year")
 }
-\author{
-Jennifer Dierauer
-}
 \seealso{
 See \code{\link{create.ts}} to format the input flow series.
 
   See \code{\link{pk.max}} for the annual maximum flow series.
 }
-
+\author{
+Jennifer Dierauer
+}

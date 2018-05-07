@@ -122,13 +122,12 @@ data(cania.sub.ts)
 res <- metrics.all(cania.sub.ts)
 }
 }
-\author{
-Jennifer Dierauer
-}
 \seealso{
 See the documentation for individual functions linked in the 
   output description for a details on methods.
   
   See \code{\link{screen.metric}} to create individual plots for each metric.
 }
-
+\author{
+Jennifer Dierauer
+}

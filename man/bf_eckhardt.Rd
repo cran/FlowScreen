@@ -25,12 +25,11 @@ bf <- bf_eckhardt(cania.sub.ts$Flow, 0.97, 0.8)
 plot(cania.sub.ts$Date, cania.sub.ts$Flow, type="l")
 points(cania.sub.ts$Date, bf, type="l", col="blue")
 }
-\author{
-Paul Whitfield
-}
 \references{
 Eckhardt, K. 2012. Technical note: Analytical sensitivity analysis 
   of two parameter recursive digital baseflow separation filter. Hydrology and
   Earth System Sciences 16: 451-455.
 }
-
+\author{
+Paul Whitfield
+}

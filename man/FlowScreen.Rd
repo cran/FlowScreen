@@ -15,8 +15,8 @@ that may have anthropogenic impacts or data inhomogeneity.
 \tabular{ll}{
 Package: \tab FlowScreen\cr
 Type: \tab Package\cr
-Version: \tab 1.2.4\cr
-Date: \tab 2017-11-10\cr
+Version: \tab 1.2.5\cr
+Date: \tab 2018-05-07\cr
 License: \tab GPL (>= 2)\cr
 }
 Daily streamflow time series downloaded with the Environment Canada Data Explorer can be loaded with \code{\link{read.flows}}. The \code{\link{read.flows}} function can also be used to load daily streamflow time series from the USGS. The streamflow regime can be visualized with \code{\link{regime}}.  A list of 30 streamflow metrics that describe high flows, low flows, and baseflows can be calculated using \code{\link{metrics.all}}. The temporal occurrence of changepoints for all metrics or for only the high flow, baseflow, or low flow metrics can be analyzed using \code{\link{screen.cpts}}. If the streamflow time series has multiple metrics exhibiting changepoints within the same year (or few years), the time series can be further analyzed using \code{\link{screen.summary}} which creates a summary plot showing the significant temporal trends and changepoints for the high flow, low flow, or baseflow metrics. The \code{\link{screen.metric}} can be used to create a time series plot for one metric at a time. The \code{screen.metric} function works with individual metrics output from the following functions: \code{\link{pk.max}}, \code{\link{pk.max.doy}}, \code{\link{Qn}}, \code{\link{pk.bf.stats}}, \code{\link{dr.seas}}, \code{\link{MAMn}}, \code{\link{bf.stats}}, \code{\link{pk.cov}}, and \code{\link{bf.seas}}.The \code{\link{screen.frames}} function creates individual plots from the \code{\link{screen.summary}} function. The \code{\link{screen.frames}} function can also be used to create custom summary plots, see the example code in the function documentation. 

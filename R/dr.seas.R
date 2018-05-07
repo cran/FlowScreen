@@ -68,22 +68,25 @@ dr.seas <- function(TS, Qdr=0.2, WinSize=30, IntEventDur=10, EventDur=15,
         EventList <- unique(DroughtEvents.season$Event)
         PDS.season <- DroughtPDS[DroughtPDS$Event %in% EventList,]
         
-        for (i in 1:length(EventList)) {
+        if (length(EventList) > 0) {
+          for (i in 1:length(EventList)) {
             MidPoint <- as.numeric(0.5*DroughtEvents.season$Severity[i])
             temp <- PDS.season[PDS.season$Event %in% EventList[i],]
             HaveMid <- FALSE
             j <- 1
             mDef <- 0
             while (HaveMid == FALSE) {
-                mDef <- mDef + (temp$Def[j])
-                
-                if (mDef >= MidPoint) {
-                    HaveMid <- TRUE
-                    DroughtEvents.season$MidDay[i] <- as.numeric(format(temp$Date[j], "%j"))
-                }
-                j <- j + 1
+              mDef <- mDef + (temp$Def[j])
+              
+              if (mDef >= MidPoint) {
+                HaveMid <- TRUE
+                DroughtEvents.season$MidDay[i] <- as.numeric(format(temp$Date[j], "%j"))
+              }
+              j <- j + 1
             }
+          }
         }
+
         
         output <- data.frame(StartDay=DroughtEvents.season$StartDay,
                              MidDay=DroughtEvents.season$MidDay,
@@ -99,3 +102,5 @@ dr.seas <- function(TS, Qdr=0.2, WinSize=30, IntEventDur=10, EventDur=15,
     
     return(output)
 }
+
+

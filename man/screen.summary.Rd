@@ -50,11 +50,10 @@ data(caniapiscau.res)
 # create a summary flow screening plot of the high flow metrics
 screen.summary(caniapiscau.res, type="l")
 }
-\author{
-Jennifer Dierauer
-}
 \references{
 Whitfield, P.H. 2013. Is 'Center of Volume' a robust indicator of changes 
   in snowmelt timing? Hydrological Processes 27:2691-8.
 }
-
+\author{
+Jennifer Dierauer
+}
