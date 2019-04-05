@@ -25,11 +25,12 @@ res <- bf_boughton(cania.sub.ts$Flow, k=0.9, C=0.1)
 plot(cania.sub.ts$Date, cania.sub.ts$Flow, xlab="", ylab="Q (m3/s)", type="l")
 points(cania.sub.ts$Date, res, type="l", col="blue")
 }
+\author{
+Paul H. Whitfield
+}
 \references{
 Boughton, WC. 1993. A hydrograph-based model for estimating the 
   water yield of ungauged catchments.In Hydrology and Water Resources Symposium,
   Institution of Engineers Australia, Newcastle, NSW; 317-324.
 }
-\author{
-Paul H. Whitfield
-}
+

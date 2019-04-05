@@ -38,3 +38,4 @@ res2 <- screen.metric(res1[,2], "Day of Year")
 \author{
 Jennifer Dierauer
 }
+

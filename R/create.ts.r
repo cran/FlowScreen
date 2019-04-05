@@ -18,7 +18,7 @@
 
 create.ts <- function(Flows, hyrstart=10) {
     
-  # remove any rows with NA valuse for the date
+  # remove any rows with NA values for the date
   Flows <- Flows[!is.na(Flows$Date),]
   
     numobs <- length(Flows$Flow)

@@ -36,9 +36,10 @@ res2 <- screen.metric(res, "Q (m3/s)")
 res <- MAMn(cania.sub.ts, n=7)
 res2 <- screen.metric(res, "Q (m3/s)")
 }
-\seealso{
-\code{\link{screen.metric}}
-}
 \author{
 Jennifer Dierauer
 }
+\seealso{
+\code{\link{screen.metric}}
+}
+

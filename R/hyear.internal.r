@@ -21,34 +21,41 @@ hyear.internal <- function(TS, hyrstart=10) {
         
         TS$hyear[TS$month %in% MonthsUp] <- TS$year[TS$month %in% MonthsUp] + 1
         TS$hmonth <- month.hyr[as.numeric(TS$month)]
+        
+    } else if (hyrstart == 1) {
+        
+        TS$hyear <- TS$month
+        
     } else if (hyrstart < 6.5) {
         
         MonthsDown <- c(1:(hyrstart-1))
         month.hyr <- c((MonthsDown + (12 - length(MonthsDown))), 1:(13-hyrstart))
         
-        TS$hyear[TS$month %in% MonthsDown] <- TS$year[TS$month %in% MonthsDown] + 1
+        TS$hyear[TS$month %in% MonthsDown] <- TS$year[TS$month %in% MonthsDown] - 1
         TS$hmonth <- month.hyr[as.numeric(TS$month)]
         
     }
     
     yr.list <- unique(TS$hyear) 
     
-    
-    for (y in 1:length(yr.list)) {
-      if (y > 1) {
-        TS$hdoy[TS$hyear %in% yr.list[y]] <- c(1:366)[1:length(TS$hdoy[TS$hyear %in% yr.list[y]])]
-      } else {
-        mlen <- nrow(TS[TS$hyear %in% yr.list[y], ])
-        if (length(seq(from = as.Date(paste(yr.list[y], "-01-01", sep = ""), format = "%Y-%m-%d"), 
-                       to = as.Date(paste(yr.list[y], "-12-31", sep = ""), format = "%Y-%m-%d"), by = 1)) > 365) {
-          TS$hdoy[TS$hyear %in% yr.list[y]] <- c((367-mlen):366)
-        } else {
-          TS$hdoy[TS$hyear %in% yr.list[y]] <- c((366-mlen):365)
+    if (hyrstart != 1) {
+        for (y in 1:length(yr.list)) {
+            
+            if (y > 1) {
+                mlen <- nrow(TS[TS$hyear == yr.list[y], ])
+                TS$hdoy[TS$hyear %in% yr.list[y]] <- c(1:366)[1:length(TS$hdoy[TS$hyear %in% yr.list[y]])]
+            } else {
+                mlen <- nrow(TS[TS$hyear %in% yr.list[y], ])
+                if (length(seq(from = as.Date(paste(yr.list[y], "-01-01", sep = ""), format = "%Y-%m-%d"), 
+                               to = as.Date(paste(yr.list[y], "-12-31", sep = ""), format = "%Y-%m-%d"), by = 1)) > 365) {
+                    TS$hdoy[TS$hyear == yr.list[y]] <- c((367-mlen):366)
+                } else {
+                    TS$hdoy[TS$hyear == yr.list[y]] <- c((366-mlen):365)
+                }
+            }
+            
         }
-      }
-        
     }
- 
     
     return(TS)
 }

@@ -33,9 +33,10 @@ data(caniapiscau.res)
 # plot changepoints for all metrics
 screen.cpts(caniapiscau.res, type="l")
 }
-\seealso{
-\code{\link{metrics.all}}
-}
 \author{
 Jennifer Dierauer
 }
+\seealso{
+\code{\link{metrics.all}}
+}
+

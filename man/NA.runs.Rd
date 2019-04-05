@@ -28,10 +28,11 @@ cania.sub <- caniapiscau[300:1200,]
 cania.ts <- create.ts(cania.sub)
 res <- NA.runs(cania.ts)
 }
+\author{
+Jennifer Dierauer
+}
 \seealso{
 \code{\link{create.ts}} to create input, \code{\link{NA.sum}} to sum the
   the missing data occurrences by year or month.
 }
-\author{
-Jennifer Dierauer
-}
+

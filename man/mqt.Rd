@@ -45,6 +45,9 @@ plot(flow.sub$doy, flow.sub$Flow, ylab="Q (m3/s)", xlab="Day of Year",
  pch=19, col="darkblue", type="b")
 points(res, pch=19, cex=0.7, col="red")
 }
+\author{
+Jennifer Dierauer
+}
 \references{
 Beyene, B.S., Van Loon, A.F., Van Lanen, H.A.J., Torfs, P.J.J.F., 2014. 
   Investigation of variable threshold level approaches for hydrological drought 
@@ -57,6 +60,4 @@ See \code{\link{create.ts}} to format the input flow series.
   The following functions use this function: \code{\link{dr.pds}}, 
   \code{\link{dr.events}}, \code{\link{dr.seas}}
 }
-\author{
-Jennifer Dierauer
-}
+

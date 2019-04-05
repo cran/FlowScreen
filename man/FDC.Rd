@@ -25,11 +25,12 @@ data(caniapiscau)
 caniapiscau <- subset(caniapiscau, !is.na(caniapiscau$Flow))
 FDC(caniapiscau$Flow, title="Caniapiscau River")
 }
+\author{
+Paul Whitfield
+}
 \references{
 Gustard, A., Bullock, A., and Dixon, J.M. (1992). Report No. 108:
   Low flow estimation in the United Kingdom. 
   Oxfordshire, United Kingdom: Institute of Hydrology.
 }
-\author{
-Paul Whitfield
-}
+

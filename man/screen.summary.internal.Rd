@@ -34,3 +34,4 @@ Internal wrapper for creating trend and change-point summary plots
 \author{
 Jennifer Dierauer
 }
+

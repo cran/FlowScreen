@@ -29,3 +29,4 @@ caniapiscau.sub.ts <- create.ts(caniapiscau.sub)
 \author{
 Jennifer Dierauer
 }
+
