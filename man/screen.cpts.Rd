@@ -4,7 +4,7 @@
 \alias{screen.cpts}
 \title{Change point time series plot}
 \usage{
-screen.cpts(metrics, type = "a", text = NULL)
+screen.cpts(metrics, type = "a", title = FALSE, change.margins = TRUE)
 }
 \arguments{
 \item{metrics}{output from \code{\link{metrics.all}}}
@@ -13,10 +13,15 @@ screen.cpts(metrics, type = "a", text = NULL)
 Options are "h" for high flow metrics, "l" for low flow metrics, "b" for baseflow 
 metrics, or "a" for all 30 metrics (10 high, 10 low, 10 baseflow).}
 
-\item{text}{optional character string for margin text, e.g. for station name, 
-location, or other notes. Set to NULL if no margin text is wanted, or set to "d" 
-to use default text containing the station ID, station name, and province/state 
-returned from \code{\link{station.info}}.}
+\item{title}{optional plot title. Default is FALSE indicating no plot title is wanted. 
+Set to TRUE to use the the default plot title, which will 
+look for 'plot title' attribute of the data.frame set by 
+\code{\link{set.plot.titles}}. All values other values 
+will be used as a custom plot title.}
+
+\item{change.margins}{TRUE or FALSE to indicate whether the user's current 
+margin settings should be used, or if the margins should be set within the 
+function. Default is TRUE, to set margins to the minimal amount.}
 }
 \value{
 When type="a", returns a data.frame of changepoint counts by metric 
@@ -30,13 +35,14 @@ time series plot overlain with a bar plot of changepoint counts by year.
 # load results from metrics.all function for the Caniapiscau River
 data(caniapiscau.res)
 
-# plot changepoints for all metrics
+# plot changepoints for all groups of metrics
 screen.cpts(caniapiscau.res, type="l")
-}
-\author{
-Jennifer Dierauer
+screen.cpts(caniapiscau.res, type="h")
+screen.cpts(caniapiscau.res, type="b")
 }
 \seealso{
 \code{\link{metrics.all}}
 }
-
+\author{
+Jennifer Dierauer
+}

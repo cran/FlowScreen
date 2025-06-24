@@ -4,22 +4,20 @@
 \alias{screen.series}
 \title{Create a plot of the daily streamflow time series}
 \usage{
-screen.series(TS, StnInfo = NULL, text = "d")
+screen.series(TS, title = FALSE, change.margins = TRUE)
 }
 \arguments{
-\item{TS}{output from \code{\link{create.ts}} containing a data.frame of flow
-time series}
+\item{TS}{data.frame of streamflow time series loaded with \code{\link{read.flows}}.}
 
-\item{StnInfo}{Optional data.frame containing user-supplied station info for plot. 
-data.frame must have 7 columns containing station info in the following order:
-Station ID, Station Name, Prov/State, Country, Latitude, Longitude, Catchment Area
-If any of the information is unavailabe, fill with NA.  The Station ID column must
-match the Station ID in column 1 of the data.frame input from \code{\link{create.ts}}.}
+\item{title}{optional plot title. Default is FALSE indicating no plot title is wanted. 
+Set to TRUE to use the the default plot title, which will 
+look for 'plot title' attribute of the data.frame set by 
+\code{\link{set.plot.titles}}. All values other values 
+will be used as a custom plot title.}
 
-\item{text}{optional character string for margin text, e.g. for station name, 
-location, or other notes. Set to NULL if not margin text is wanted, or set to "d" 
-to use default text containing the station ID, station name, and province/state 
-returned from \code{\link{station.info}}.}
+\item{change.margins}{TRUE or FALSE to indicate whether the user's current 
+margin settings should be used, or if the margins should be set within the 
+function. Default is TRUE, to set margins to the minimal amount.}
 }
 \description{
 Plots the daily streamflow time series and color codes points by data quality codes if 
@@ -36,4 +34,3 @@ screen.series(cania.sub.ts)
 \author{
 Jennifer Dierauer and Paul Whitfield
 }
-

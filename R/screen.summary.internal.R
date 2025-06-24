@@ -10,6 +10,8 @@
 #' @param Year1 start year of original time series
 #' @param YearEnd end year of original time series
 #' @param hyrstart numeric indicating month for start of the hydrologic year
+#' @importFrom stats cor.test
+#' @import graphics
 #' @author Jennifer Dierauer
 
 
@@ -50,10 +52,10 @@ screen.summary.internal <- function(input, mparam, type, ylabs, i, DataType, maf
                              MyYlims <- c(0, ceiling(1.2*max(MyY, na.rm=T)))))
 
     # set figure margins based on position in figure
-    if (PlotNo %in% c(4,5,6,7,8)) {graphics::par(mar=c(0.5,4,0,0))}
-    if (PlotNo == 9) {graphics::par(mar=c(0.5,4,0,0.5))}
-    if (PlotNo %in% c(10,11,12)) {graphics::par(mar=c(3,4,0,0))}
-    if (PlotNo == 13) {graphics::par(mar=c(3,4,0,0.5))}
+    if (PlotNo %in% c(4,5,6,7,8)) {graphics::par(mar=c(0.5,4.5,0,0))}
+    if (PlotNo == 9) {graphics::par(mar=c(0.5,4.5,0,0.5))}
+    if (PlotNo %in% c(10,11,12)) {graphics::par(mar=c(3,4.5,0,0))}
+    if (PlotNo == 13) {graphics::par(mar=c(3,4.5,0,0.5))}
     
     
     ## set y axis labels based on hydrologic year for cov plots
@@ -63,7 +65,7 @@ screen.summary.internal <- function(input, mparam, type, ylabs, i, DataType, maf
              ylab="", ylim=MyYlims, yaxt="n",
              xlim=c(0, MyXMax), xaxt="n", xlab="",
              type="p", col=cols[DataType[i]],
-             cex=0.8, pch=19)
+             cex=0.8, pch=19, las = 1)
         
         if (hyrstart != 1) {
             mlabels <- c(month.abb[hyrstart:12], month.abb[1:(hyrstart-1)])
@@ -80,7 +82,7 @@ screen.summary.internal <- function(input, mparam, type, ylabs, i, DataType, maf
              xlim=c(0, MyXMax),
              xaxt="n", xlab="",
              type="p", col=cols[DataType[i]],
-             cex=0.8, pch=19)
+             cex=0.8, pch=19, las = 1)
         
         graphics::title(ylab=ylabs[i+3], line=2)
     }
@@ -89,29 +91,31 @@ screen.summary.internal <- function(input, mparam, type, ylabs, i, DataType, maf
     # if plot is in bottom row, add axis labels
     if (PlotNo %in% c(11,12,13)) {
         
-        mby <- ifelse(NumYrs > 100, 20, ifelse(NumYrs > 50, 15, 10))
-        myticks <- seq(from = 1, to = max(MyX.mod), by = mby)
-        mlabels <- seq(from = Year1, to = YearEnd, by = mby)
-        graphics::axis(1, at=myticks, labels=mlabels)
+        #mby <- ifelse(NumYrs > 100, 20, ifelse(NumYrs > 50, 15, 10))
+        #myticks <- seq(from = 1, to = max(MyX.mod), by = mby)
+        #mlabels <- seq(from = Year1, to = YearEnd, by = mby)
+        #graphics::axis(1, at=myticks, labels=mlabels)
+        
+        year_labels <- pretty(c(Year1:YearEnd))
+        year_labels = year_labels[year_labels %in% c(Year1:YearEnd)]
+        year_ticks = year_labels - as.numeric(Year1)
+        graphics::axis(1, at=year_ticks, labels=year_labels)
     }
     
     if (PlotNo == 10) {
         if (type=="l") {
                 
-            #series.length <- YearEnd - Year1
-            #ifelse(NumYrs > 100, mby <- 20, ifelse(series.length > 50, mby <- 15, mby <- 10))
-            mby <- ifelse(NumYrs > 100, 20, ifelse(NumYrs > 50, 15, 10))
-            myticks <- seq(from=1, to=365.25*(NumYrs), by = (365.25 * mby))
-            mlabels <- seq(from = Year1, to = YearEnd, by = mby)
-            graphics::axis(1, at=myticks, labels=mlabels)
+            year_labels = pretty(c(Year1:YearEnd))
+            year_labels = year_labels[year_labels %in% c(Year1:YearEnd)]
+            year_ticks = as.Date(paste0("01-01-", year_labels), format = "%m-%d-%Y") - MyX[1]
+            graphics::axis(1, at=year_ticks, labels=year_labels)
 
         } else {
 
-            mby <- ifelse(NumYrs > 100, 20, ifelse(NumYrs > 50, 15, 10))
-            myticks <- seq(from = 1, to = max(MyX.mod), by = mby)
-            mlabels <- seq(from = Year1, to = YearEnd, by = mby)
-            
-            graphics::axis(1, at=myticks, labels=mlabels)
+            year_labels <- pretty(c(Year1:YearEnd))
+            year_labels = year_labels[year_labels %in% c(Year1:YearEnd)]
+            year_ticks = year_labels - as.numeric(Year1)
+            graphics::axis(1, at=year_ticks, labels=year_labels)
             
         }
     }
@@ -138,11 +142,14 @@ screen.summary.internal <- function(input, mparam, type, ylabs, i, DataType, maf
     MyCpts <- mparam[[7]]
     MyMeans <- mparam[[8]]
     NumPoints <- length(MyX.mod)
-
-    MyCpts <- MyCpts[MyCpts < NumPoints]
     
-    # add changepoints and means
-    if (!is.na(MyCpts) && length(MyCpts) > 0){
+    ## remove changepoints that are too close to the beginning or end of the time series
+    MyCpts <- MyCpts[(MyCpts > 3) & (MyCpts < (NumPoints-3))] 
+    
+    
+    if (length(MyCpts) > 0) {
+      # add changepoints and means
+      if (!is.na(MyCpts[1])){
         
         for (j in 1:length(MyCpts)) {
             graphics::abline(v=MyX.mod[MyCpts[j]], lwd=2, lty=5)
@@ -155,6 +162,7 @@ screen.summary.internal <- function(input, mparam, type, ylabs, i, DataType, maf
         xpts <- c(xpts[2], 1.1*max(MyX.mod))
         ypts <- c(MyMeans[length(MyMeans)], MyMeans[length(MyMeans)])
         graphics::points(xpts, ypts, type="l", lwd=2)
+      }
     }
     
     ## add r2 info to cov plots

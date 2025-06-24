@@ -1,3 +1,4 @@
+#' @importFrom stats quantile
 
 regime.internal <- function(TS, q=c(0.9, 0.1)) {
     
@@ -26,12 +27,20 @@ regime.internal <- function(TS, q=c(0.9, 0.1)) {
     xx<-c(1:max(as.numeric(doy)),max(as.numeric(doy)):1)
     yy<-c(Qdoy[,4],Qdoy[max(as.numeric(doy)):1,5])
     
+    # get y-axis label
+    if (TS$FlowUnits[1] == 'm3/s') {
+        yl1 = expression(paste("Discharge (m" ^{3}, "/s)"))
+    } else if (TS$FlowUnits[1] == 'ft3/s') {
+        yl1 = expression(paste("Discharge (ft" ^{3}, "/s)"))
+    } else {
+        yl1 = 'unknown units'
+    }
+    
     ### create plot
     graphics::par(mar=c(4,4,0,0))
-    yl1=expression(paste("Discharge (m" ^{3}, "/s)"))
     y.lims <- y.lims <- range(pretty(c(0, TS$Flow)))
     graphics::plot(Qdoy[,1], col="#6BAED6", type="p", pch=19, cex=0.5, xlab="", ylab="",
-         xaxt="n", ylim=y.lims)#max
+         xaxt="n", ylim=y.lims, las=1)#max
     graphics::title(ylab=yl1, line=2)
     graphics::points(Qdoy[,2], col="#6BAED6", type="p", pch=19, cex=0.5) #min
     graphics::polygon(xx, yy, col="gray", border="#3182BD")

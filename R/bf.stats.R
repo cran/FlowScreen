@@ -2,8 +2,7 @@
 #' 
 #' This function estimates the baseflow and calculates the mean, max, and min
 #' baseflow and baseflow index for a user defined time period.
-#' @param TS output from \code{\link{create.ts}} containing a data.frame of flow
-#'   time series
+#' @param TS data.frame of streamflow time series loaded with \code{\link{read.flows}}.
 #' @param by summary period.  Options are "year", "hyear", "month", or "doy".  
 #'   Default is "hyear".
 #' @details This function calls \code{\link{bf_eckhardt}} to complete the 
@@ -26,10 +25,14 @@
 #' @examples
 #' data(cania.sub.ts)
 #' 
+#' cania.sub.ts <- set.plot.titles(cania.sub.ts, title.elements = c("StationID", "Country"))
 #' res <- bf.stats(cania.sub.ts)
-#' res2 <- screen.metric(res[,2], "m3/s")
+#' res2 <- screen.metric(res[,2], "m3/s", title = TRUE)
 
 bf.stats <- function(TS, by="hyear") {
+    
+    plot_title <- attr(TS, 'plot title')
+    title_size <- attr(TS, 'title size')
     
     ### Set parameter values for Eckhardt RDF
     BFindex <- 0.8
@@ -71,6 +74,13 @@ bf.stats <- function(TS, by="hyear") {
     years <- as.character(output[,1])
     for (i in 2:9) {
         attr(output[,i], "times") <- years
+        attr(output[,i], 'StationID') <- TS$ID[1]
+        attr(output[,i], 'Agency') <- TS$Agency[1]
+        # carry-over the plot title if it has been set
+        if (!is.null(plot_title)) {
+            attr(output[,i], 'plot title') <- plot_title
+            attr(output[,i], 'title size') <- title_size
+        }
     }
     
     return(output)

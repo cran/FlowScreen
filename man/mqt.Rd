@@ -7,8 +7,7 @@
 mqt(TS, Qdr = 0.2, WinSize = 30)
 }
 \arguments{
-\item{TS}{output from \code{\link{create.ts}} containing a data.frame of flow
-time series}
+\item{TS}{data.frame of streamflow time series loaded with \code{\link{read.flows}}.}
 
 \item{Qdr}{Numeric value of the drought threshold quantile.  Default is 0.2.}
 
@@ -38,15 +37,12 @@ data(cania.sub.ts)
 res <- mqt(cania.sub.ts)
 
 # subset one year of the flow series
-flow.sub <- cania.sub.ts[cania.sub.ts$year == 1990,]
+flow.sub <- cania.sub.ts[cania.sub.ts$year == 1972,]
 
-# plot the 1990 observed flows in dark blue and the daily drought threshold in red
+# plot the 1972 observed flows in dark blue and the daily drought threshold in red
 plot(flow.sub$doy, flow.sub$Flow, ylab="Q (m3/s)", xlab="Day of Year",
  pch=19, col="darkblue", type="b")
 points(res, pch=19, cex=0.7, col="red")
-}
-\author{
-Jennifer Dierauer
 }
 \references{
 Beyene, B.S., Van Loon, A.F., Van Lanen, H.A.J., Torfs, P.J.J.F., 2014. 
@@ -60,4 +56,6 @@ See \code{\link{create.ts}} to format the input flow series.
   The following functions use this function: \code{\link{dr.pds}}, 
   \code{\link{dr.events}}, \code{\link{dr.seas}}
 }
-
+\author{
+Jennifer Dierauer
+}

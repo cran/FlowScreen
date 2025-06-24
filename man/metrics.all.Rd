@@ -4,12 +4,19 @@
 \alias{metrics.all}
 \title{Streamflow metrics}
 \usage{
-metrics.all(TS, Qmax = 0.95, Dur = 5, Qdr = 0.2, WinSize = 30,
-  Season = c(4:9), NAthresh = 0.5, language = "English")
+metrics.all(
+  TS,
+  Qmax = 0.95,
+  Dur = 5,
+  Qdr = 0.2,
+  WinSize = 30,
+  Season = c(4:9),
+  NAthresh = 0.5,
+  language = "English"
+)
 }
 \arguments{
-\item{TS}{output from \code{\link{create.ts}} containing a data.frame of flow
-time series}
+\item{TS}{data.frame of streamflow time series loaded with \code{\link{read.flows}}.}
 
 \item{Qmax}{Numeric value for peaks over threshold quantile.
 Default is 0.95.}
@@ -27,7 +34,7 @@ window quantile drought threshold. See \code{\link{mqt}}. Default is 30.}
 is c(4:9) for non-frost season droughts.}
 
 \item{NAthresh}{Numeric value indicating the threshold for missing data points
-in any one year.  Default is 0.5, indicating that years with more than 50 percent missing data
+in any one year.  Default is 0.50, indicating that years with more than 50 percent missing data
 will be omitted from the metric calculations. This value should always be set to 
 greater than 0.1, as years with fewer observations than approximately 1 month will
 cause errors.}
@@ -54,7 +61,7 @@ Returns a list with the following elements:
     \item Day of Year 25 percent Annual Volume - calculated with \code{\link{pk.cov}}
     \item Center of Volume - calculated with \code{\link{pk.cov}}
     \item Day of Year 75 percent Annual Volume - calculated with \code{\link{pk.cov}}
-    \item Duration between 25 percent and 75 percent Annual Volume - calculated with \code{\link{cov}}
+    \item Duration between 25 percent and 75 percent Annual Volume - calculated with \code{\link{pk.cov}}
     \item Q10 - calculated with \code{\link{Qn}}
     \item Q25 - calculated with \code{\link{Qn}}
     \item Drought Start - calculated with \code{\link{dr.seas}}
@@ -106,7 +113,7 @@ Calculates 30 different flow metrics, 10 each for high flows, low flows, and bas
 \details{
 This function calculates streamflow metrics and calculates the 
   prewhitened trend using \code{\link[zyp]{zyp.trend.vector}} and looks
-  for changpoints in mean and variance using \code{\link[changepoint]{cpt.meanvar}}
+  for changepoints in mean and variance using \code{\link[changepoint]{cpt.meanvar}}
   This function is intended for use as a data quality screening tool aimed 
   at identifying streamflow records with anthropogenic impacts and should not be used
   to complete a temporal trend analysis, as the calculated metrics may not be 
@@ -122,13 +129,12 @@ data(cania.sub.ts)
 res <- metrics.all(cania.sub.ts)
 }
 }
-\author{
-Jennifer Dierauer
-}
 \seealso{
 See the documentation for individual functions linked in the 
-  output description for a details on methods.
+  output description for details on methods.
   
   See \code{\link{screen.metric}} to create individual plots for each metric.
 }
-
+\author{
+Jennifer Dierauer
+}

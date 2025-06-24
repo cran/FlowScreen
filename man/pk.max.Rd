@@ -7,8 +7,7 @@
 pk.max(TS)
 }
 \arguments{
-\item{TS}{output from \code{\link{create.ts}} containing a data.frame of 
-the daily streamflow time series}
+\item{TS}{data.frame of streamflow time series loaded with \code{\link{read.flows}}.}
 }
 \value{
 Returns a numeric vector containing the annual maximum flow (m3/s) 
@@ -20,12 +19,14 @@ This function returns the annual maximum series from a daily streamflow time
 series.
 }
 \examples{
-data(cania.sub.ts)
-res <- pk.max(cania.sub.ts)
-res2 <- screen.metric(res, "Q (m3/s)")
-}
-\author{
-Jennifer Dierauer
+data(caniapiscau)
+cania.ts <- create.ts(caniapiscau, hyrstart = 4)
+cania.ts <- drop.years(cania.ts)
+cania.ts <- set.plot.titles(cania.ts, 
+title.elements = c("StationID", "StnName", "StateProv"))
+
+res <- pk.max(cania.ts)
+res2 <- screen.metric(res, ylabel = "Q (m3/s)", title = TRUE)
 }
 \seealso{
 See \code{\link{create.ts}} to format the input flow series.
@@ -33,4 +34,6 @@ See \code{\link{create.ts}} to format the input flow series.
   See \code{\link{pk.max.doy}} to find the day of year for each annual
   maximum flow event.
 }
-
+\author{
+Jennifer Dierauer
+}

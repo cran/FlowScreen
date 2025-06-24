@@ -6,15 +6,18 @@
 #' @param DataType numeric indicating data type
 #' @param maf mean annual flow series
 #' @param mmar plot margins
-#' @param text boolean indicating whether to add text
+#' @param text title passed from screen.frames (text or NULL)
 #' @param xaxis boolean indicating whether to plot the x axis
 #' @param Year1 start year of original time series
 #' @param YearEnd end year of original time series
 #' @param hyrstart numeric indicating month for start of the hydrologic year
+#' @importFrom stats cor.test
+#' @import graphics
 #' @author Jennifer Dierauer
 
 screen.frames.internal <- function(input, mparam, mylab, DataType, maf, mmar, text, xaxis,
                           Year1, YearEnd, hyrstart) {
+    
     
     # set colors for data types
     cols <- c("#08306B", "#08519C", "#2171B5", "#4292C6", "#6BAED6")
@@ -50,6 +53,7 @@ screen.frames.internal <- function(input, mparam, mylab, DataType, maf, mmar, te
     # set figure margins
     if (!is.null(text)) {graphics::par(oma=c(0,0,1,0))}
     graphics::par(mar=mmar)
+    graphics::par(xpd = FALSE)
     
     ## set y axis labels based on hydrologic year for cov plots
     if (metricID %in% c(7, 8, 9, 27, 28, 29)) {
@@ -83,19 +87,19 @@ screen.frames.internal <- function(input, mparam, mylab, DataType, maf, mmar, te
     # determine x value format to plot axis labels
     if (xaxis == T) {
         if (nchar(as.character(MyX[1])) > 5) {
-
-            series.length <- YearEnd - Year1
-            ifelse(NumYrs > 100, mby <- 20, ifelse(series.length > 50, mby <- 15, mby <- 10))
-            myticks <- seq(from=1, to=365.25*(series.length + 2), by = (365.25 * mby))
-            mlabels <- seq(from = Year1, to = YearEnd, by = mby)
-            graphics::axis(1, at=myticks, labels=mlabels)
+            
+            year_labels = pretty(c(Year1:YearEnd))
+            year_labels = year_labels[year_labels %in% c(Year1:YearEnd)]
+            
+            year_ticks = as.Date(paste0("01-01-", year_labels), format = "%m-%d-%Y") - MyX[1]
+            graphics::axis(1, at=year_ticks, labels=year_labels)
             
         } else {
             
-            ifelse(NumYrs > 100, mby <- 20, ifelse(NumYrs > 50, mby <- 15, mby <- 10))
-            myticks <- seq(from = 1, to = max(MyX.mod), by = mby)
-            mlabels <- seq(from = Year1, to = YearEnd, by = mby)
-            graphics::axis(1, at=myticks, labels=mlabels)
+            year_labels <- pretty(c(Year1:YearEnd))
+            year_labels = year_labels[year_labels %in% c(Year1:YearEnd)]
+            year_ticks = year_labels - as.numeric(Year1)
+            graphics::axis(1, at=year_ticks, labels=year_labels)
             
         }
     }
@@ -107,7 +111,7 @@ screen.frames.internal <- function(input, mparam, mylab, DataType, maf, mmar, te
     ## add trend lines and color according to increasing or decreasing
     slope <- mparam[[3]]
     
-    if (!is.na(mparam[[6]]) && mparam[[6]] <= 0.1) {
+    if (!is.na(mparam[[6]]) & (mparam[[6]] <= 0.1)) {
         pval <- mparam[[6]]
         mcol <- ifelse(slope[2] < 0, "darkred", "darkblue")
         mlwd <- ifelse(pval <= 0.05, ifelse(pval<=0.01, 3, 2), 1)
@@ -122,25 +126,27 @@ screen.frames.internal <- function(input, mparam, mylab, DataType, maf, mmar, te
     MyCpts <- mparam[[7]]
     MyMeans <- mparam[[8]]
     NumPoints <- length(MyX.mod)
-    MyCpts <- MyCpts[MyCpts > 3 & MyCpts < (NumPoints-3)] ## remove cpts at end and beginning
     
-    # add changepoints and means
-    if (!is.na(MyCpts) && length(MyCpts) > 0){
-        
-        for (j in 1:length(MyCpts)) {
-            graphics::abline(v=MyX.mod[MyCpts[j]], lwd=2, lty=5)
-            ifelse(j==1, xpts <- c(-10, MyX.mod[MyCpts[j]]),
-                   xpts <- c(MyX.mod[MyCpts[j-1]], MyX.mod[MyCpts[j]]))
-            ypts <- c(MyMeans[j], MyMeans[j])
+    ## remove changepoints that are too close to the beginning or end of the time series
+    MyCpts <- MyCpts[(MyCpts > 3) & (MyCpts < (NumPoints-3))] 
+    
+    if (length(MyCpts) > 0) {
+        # add changepoints and means
+        if (!is.na(MyCpts[1])){
+            
+            for (j in 1:length(MyCpts)) {
+                graphics::abline(v=MyX.mod[MyCpts[j]], lwd=2, lty=5)
+                ifelse(j==1, xpts <- c(-10, MyX.mod[MyCpts[j]]),
+                       xpts <- c(MyX.mod[MyCpts[j-1]], MyX.mod[MyCpts[j]]))
+                ypts <- c(MyMeans[j], MyMeans[j])
+                graphics::points(xpts, ypts, type="l", lwd=2)
+            }
+            
+            xpts <- c(xpts[2], 1.1*max(MyX.mod))
+            ypts <- c(MyMeans[length(MyMeans)], MyMeans[length(MyMeans)])
             graphics::points(xpts, ypts, type="l", lwd=2)
         }
-        
-        xpts <- c(xpts[2], 1.1*max(MyX.mod))
-        ypts <- c(MyMeans[length(MyMeans)], MyMeans[length(MyMeans)])
-        graphics::points(xpts, ypts, type="l", lwd=2)
     }
-    
-
     
     ## add r2 info to cov plots
     if (metricID %in% c(8, 28)) {

@@ -4,7 +4,9 @@
 \name{caniapiscau.res}
 \alias{caniapiscau.res}
 \title{Screening results for the Caniapiscau River}
-\format{Formatted as indicated in the documentation for \code{\link{metrics.all}}}
+\format{
+Formatted as indicated in the documentation for \code{\link{metrics.all}}
+}
 \source{
 Original flow series from Environment Canada. 2010. EC Data Explorer V1.2.30. \cr
   Water Survey of Canada V1.2.30 https://www.ec.gc.ca/rhc-wsc/
@@ -31,4 +33,3 @@ caniapiscau.res <- metrics.all(caniapiscau.ts)
 data(caniapiscau.res)
 }
 \keyword{datasets}
-

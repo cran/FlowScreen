@@ -4,8 +4,19 @@
 \alias{screen.frames.internal}
 \title{Internal wrapper for creating trend and change-point plots}
 \usage{
-screen.frames.internal(input, mparam, mylab, DataType, maf, mmar, text, xaxis,
-  Year1, YearEnd, hyrstart)
+screen.frames.internal(
+  input,
+  mparam,
+  mylab,
+  DataType,
+  maf,
+  mmar,
+  text,
+  xaxis,
+  Year1,
+  YearEnd,
+  hyrstart
+)
 }
 \arguments{
 \item{input}{metric time series}
@@ -20,7 +31,7 @@ screen.frames.internal(input, mparam, mylab, DataType, maf, mmar, text, xaxis,
 
 \item{mmar}{plot margins}
 
-\item{text}{boolean indicating whether to add text}
+\item{text}{title passed from screen.frames (text or NULL)}
 
 \item{xaxis}{boolean indicating whether to plot the x axis}
 
@@ -36,4 +47,3 @@ Internal wrapper for creating trend and change-point plots
 \author{
 Jennifer Dierauer
 }
-

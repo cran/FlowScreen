@@ -3,18 +3,18 @@
 #' Plots the daily streamflow time series and color codes points by data quality codes if 
 #' the data are from Water Survey Canada. Also highlights date ranges with missing
 #' observations.
-#' @param TS output from \code{\link{create.ts}} containing a data.frame of flow
-#'   time series
-#' @param StnInfo Optional data.frame containing user-supplied station info for plot. 
-#'   data.frame must have 7 columns containing station info in the following order:
-#'   Station ID, Station Name, Prov/State, Country, Latitude, Longitude, Catchment Area
-#'   If any of the information is unavailabe, fill with NA.  The Station ID column must
-#'   match the Station ID in column 1 of the data.frame input from \code{\link{create.ts}}.
-#' @param text optional character string for margin text, e.g. for station name, 
-#'   location, or other notes. Set to NULL if not margin text is wanted, or set to "d" 
-#'   to use default text containing the station ID, station name, and province/state 
-#'   returned from \code{\link{station.info}}. 
+#' @param TS data.frame of streamflow time series loaded with \code{\link{read.flows}}.
+#' @param title optional plot title. Default is FALSE indicating no plot title is wanted. 
+#'   Set to TRUE to use the the default plot title, which will 
+#'   look for 'plot title' attribute of the data.frame set by 
+#'   \code{\link{set.plot.titles}}. All values other values 
+#'   will be used as a custom plot title.
+#' @param change.margins TRUE or FALSE to indicate whether the user's current 
+#' margin settings should be used, or if the margins should be set within the 
+#' function. Default is TRUE, to set margins to the minimal amount. 
 #' @author Jennifer Dierauer and Paul Whitfield
+#' @importFrom grDevices heat.colors
+#' @import graphics
 #' @export
 #' @examples
 #' # load flow time series for the Caniapiscau River
@@ -23,24 +23,46 @@
 #' # plot daily time series with default margin text
 #' screen.series(cania.sub.ts)
 
-screen.series <- function (TS, StnInfo = NULL, text="d") {
+screen.series <- function (TS, title = FALSE, change.margins = TRUE) {
     
     opar <- graphics::par(no.readonly = TRUE)
 
-    y1 <- expression(paste("Discharge (m" ^{3}, "/s)"))
-    
-    if (!is.null(text)) {graphics::par(oma = c(0, 0, 3, 0))}
-    
-    stdata <- station.info(TS, StnInfo)
-    Country <- stdata[4]
-    
-    Agency <- TS$Agency[1]
-    if (is.na(Agency)) {
-        Agency <- "Unknown"
+    if (TS$FlowUnits[1] == 'm3/s') {
+        y1 = expression(paste("Discharge (m" ^{3}, "/s)"))
+    } else if (TS$FlowUnits[1] == 'ft3/s') {
+        y1 = expression(paste("Discharge (ft" ^{3}, "/s)"))
+    } else {
+        y1 = 'unknown units'
     }
-    if (is.na(Country)) {
-        Country <- "Unknown"
-    }
+    
+    
+    plot_title <-  attr(TS, 'plot title')
+    title_size <- attr(TS, 'title size')
+    
+    
+    if (title != FALSE) {
+        
+        if (title == TRUE) {
+            if (!is.null(plot_title)) {
+                title.text <- plot_title
+            } else {title.text <- NULL}
+        } else {
+            title.text <- title
+        }
+        
+        if (!is.null(title_size)) {
+            mcex <- title_size
+        } else {mcex <- 1}
+        
+        graphics::mtext(title.text, side = 3, line = -1, outer = TRUE, cex = mcex)
+    } else {title.text <- NULL}
+    
+    
+    if (!is.null(title.text)) {graphics::par(oma = c(0, 0, 3, 0))}
+    
+    stdata <- station.info(Agency = TS$Agency[1], StationID = TS$ID[1])
+    Country <- stdata$Country
+    Agency <- stdata$Agency
     
     if (Agency == "WSC") {
         SYMs <- c("", "E", "A", "B", "D", "R")
@@ -50,17 +72,17 @@ screen.series <- function (TS, StnInfo = NULL, text="d") {
                     "#FF7F00", "#984EA3")
         codes <- as.factor(TS$Code)
         codes <- match(codes, SYMs)
-        graphics::par(mar = c(4, 3, 0, 0.5))
+        if (change.margins == TRUE) {graphics::par(mar = c(4, 4.5, 0, 0.5))}
         mYlims <- c(0, 1.2 * max(TS$Flow))
         graphics::plot(TS$Date, TS$Flow, pch = 19, col = SYMcol[codes], 
-             cex = 0.5, xlab = "", ylab = "", ylim = mYlims)
-        graphics::title(ylab = y1, line = 2)
+             cex = 0.5, xlab = "", ylab = "", ylim = mYlims, las = 1)
+        graphics::title(ylab = y1, line = 3)
         graphics::legend(TS$Date[1], 1.15 * max(TS$Flow), SYMnames, pch = 19, 
                pt.cex = 0.9, cex = 0.9, col = SYMcol, bty = "n", 
                xjust = 0, x.intersp = 0.5, yjust = 0.5, ncol = 3)
-    }
-    else {
-        graphics::par(mar = c(3, 4, 0, 0.5))
+    } else {
+        if (change.margins == TRUE) {graphics::par(mar = c(3, 4, 0, 0.5))}
+        
         mYlims <- c(0, 1.2 * max(TS$Flow))
         graphics::plot(TS$Date, TS$Flow, pch = 19, cex = 0.5, xlab = "", ylab="", ylim = mYlims)
         graphics::title(ylab = y1, line = 2)
@@ -78,15 +100,9 @@ screen.series <- function (TS, StnInfo = NULL, text="d") {
         }
     }
     
-    if (!is.null(text)) {
+    if (!is.null(title.text)) {
         
-        if (text == "d") {
-            stinfo <- station.info(TS, Plot=F)
-            text <- paste("ID: ", stinfo[1],", NAME: ", stinfo[2],
-                          ", PROV/STATE: ", stinfo[3], sep = "")
-        }
-        
-        graphics::mtext(text, side=3, line=1, outer=T, cex=0.7)
+        graphics::mtext(title.text, side=3, line=1, outer=T, cex=mcex)
     }
     
     on.exit(suppressWarnings(graphics::par(opar)))

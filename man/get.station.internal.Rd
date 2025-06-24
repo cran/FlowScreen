@@ -2,20 +2,21 @@
 % Please edit documentation in R/get.station.internal.r
 \name{get.station.internal}
 \alias{get.station.internal}
-\title{Get station information for USGS or WSC hydrometric stations}
+\title{Get station information for hydrometric stations}
 \usage{
-get.station.internal(stnID)
+get.station.internal(Agency, StationID)
 }
 \arguments{
-\item{stnID}{Character string of station ID.}
+\item{Agency}{Character string of Agency.}
+
+\item{StationID}{Character string of station ID.}
 }
 \value{
-Returns a list of station information
+Returns a data.frame of station information
 }
 \description{
-Get station information for USGS or WSC hydrometric stations
+Get station information for ROBIN, USGS, or WSC hydrometric stations.
 }
 \author{
 Jennifer Dierauer
 }
-

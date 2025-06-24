@@ -14,15 +14,12 @@
 #'   or a range c(1:5).
 #' @param language Language for plot labels.  Choice of either "English" or
 #'   "French". Default is "English".
-#' @param StnInfo Optional data.frame containing user-supplied station info for plot. 
-#'   data.frame must have 7 columns containing station info in the following order:
-#'   Station ID, Station Name, Prov/State, Country, Latitude, Longitude, Catchment Area
-#'   If any of the information is unavailabe, fill with NA. The Station ID column must
-#'   match the Station ID in column 1 of the data.frame input from \code{\link{create.ts}}.
 #' @param mmar Numeric vector specifying plot margins. Default is c(3,4,0.5,0.5)
-#' @param text Character string containing text for margin. This can be set to NULL if no
-#'   margin text is wanted, or set to "d" to use default text containing the station ID, station 
-#'   name, and the prov/state output from \code{\link{station.info}}. Set to NULL to use this 
+#' @param title optional plot title. Default is FALSE indicating no plot title is wanted. 
+#'   Set to TRUE to use the the default plot title, which will 
+#'   look for 'plot title' attribute of the data.frame set by 
+#'   \code{\link{set.plot.titles}}. All values other values 
+#'   will be used as a custom plot title. Set to FALSE to use this 
 #'   function in a multi-plot layout.
 #' @param multi Boolean indicating whether the function is being used to create one plot
 #'   in a multi-plot layout. Default is F. If T, suppresses the reset of plot parameter settings.
@@ -70,6 +67,7 @@
 #'     \item Duration between 25 percent and 75 percent Baseflow Volume
 #'   }
 #' @author Jennifer Dierauer and Paul Whitfield
+#' @importFrom graphics par
 #' @export
 #' @examples
 #' # load results from metrics.all function for the Caniapiscau River
@@ -86,33 +84,36 @@
 #' opar <- par(no.readonly = TRUE)
 #' layout(matrix(c(1,2,3,4), 2, 2, byrow=TRUE))
 #' par(oma=c(0,0,3,0))
-#' stninfo <- station.info(caniapiscau.ts, Plot=TRUE)
-#' screen.frames(caniapiscau.res, type="h", element=1, text=NULL, multi=TRUE)
-#' screen.frames(caniapiscau.res, type="l", element=1, text=NULL, multi=TRUE)
-#' screen.frames(caniapiscau.res, type="b", element=1, text=NULL, multi=TRUE)
-#' mtext(paste("Station ID: ", caniapiscau.ts[1,1], ", Agency: WSC, Country: CA", sep=""),
-#' side=3, line=1, outer=TRUE, cex=0.9)
+#' stninfo <- station.info(caniapiscau.ts$Agency[1], caniapiscau.ts$ID[1], Plot=TRUE)
+#' screen.frames(caniapiscau.res, type="h", element=1, multi=TRUE)
+#' screen.frames(caniapiscau.res, type="l", element=1, multi=TRUE)
+#' screen.frames(caniapiscau.res, type="b", element=1, multi=TRUE)
+#' 
 #' par <- opar
 #' layout(1,1,1)
 #' 
 #' # or plot everything!
 #' opar <- par(no.readonly = TRUE)
 #' layout(matrix(c(1:30), 5, 6, byrow=TRUE))
-#' screen.frames(caniapiscau.res, type="h", text=NULL, multi=TRUE)
-#' screen.frames(caniapiscau.res, type="l", text=NULL, multi=TRUE)
-#' screen.frames(caniapiscau.res, type="b", text=NULL, multi=TRUE)
+#' screen.frames(caniapiscau.res, type="h", multi=TRUE)
+#' screen.frames(caniapiscau.res, type="l", multi=TRUE)
+#' screen.frames(caniapiscau.res, type="b", multi=TRUE)
 #' par <- opar
 #' layout(1,1,1)
 
 
-screen.frames <- function (metrics, type = "h", element=NULL, language = "English", 
-                          StnInfo = NULL, mmar=c(3,4,0.5,0.5), text="d", multi=F, xaxis=T){
+screen.frames <- function(metrics, type = "h", element=NULL, language = "English", 
+                          mmar=c(3,4,0.5,0.5), title=FALSE, multi=F, xaxis=T){
     
     if (multi==F) {opar <- graphics::par(no.readonly = TRUE)}
     
     TS <- metrics[[3]]
     inmetrics <- metrics[[1]]
     inparams <- metrics[[2]]
+    
+    flow.units <- TS$FlowUnits[1]
+    plot_title <- metrics$plot.title[[1]][1]
+    title_size <- metrics$plot.title[[2]][1]
     
     Year1 <- min(c(as.numeric(TS$hyear[1]), as.numeric(TS$year[1])))
     YearEnd <- max(c(max(as.numeric(TS$year)), max(as.numeric(TS$hyear))))
@@ -148,36 +149,30 @@ screen.frames <- function (metrics, type = "h", element=NULL, language = "Englis
         Qmax <- paste("0.", Qmax, sep = "")
     }
     
-    MyXlabs <- get.titles.internal(type, language, Qmax)$Xlabs
-    MyYlabs <- get.titles.internal(type, language, Qmax)$Ylabs
+    MyXlabs <- get.titles.internal(type, flow.units, language, Qmax)$Xlabs
+    MyYlabs <- get.titles.internal(type, flow.units, language, Qmax)$Ylabs
     
-    if (!is.null(StnInfo)) {
-        StnInfo[, 1] <- as.character(StnInfo[, 1])
-        StnInfo[, 2] <- as.character(StnInfo[, 2])
-        StnInfo[, 3] <- as.character(StnInfo[, 3])
-        StnInfo[, 4] <- as.character(StnInfo[, 4])
-        StnInfo[, 5] <- as.numeric(StnInfo[, 5])
-        StnInfo[, 6] <- as.numeric(StnInfo[, 6])
-        StnInfo[, 7] <- as.numeric(StnInfo[, 7])
-    }
-    
-    StnInfo <- station.info(TS, StnInfo, Plot = F)
-    
-    if (!is.null(text)) {
+    if (title != FALSE) {
         
-        if (text=="d") {
+        if (title == TRUE) {
+            if (!is.null(plot_title)) {
+                title.text <- plot_title
+            } else {title.text <- NULL}
+        } else {
+            title.text <- title
+        }
         
-            mytext <- paste("ID: ", StnInfo[1],", NAME: ", StnInfo[2],
-                                ", PROV/STATE: ", StnInfo[3], sep = "")
-        } else {mytext <- text}
+        if (!is.null(title_size)) {
+            mcex <- title_size
+        } else {mcex <- 1}
         
-    } else { mytext <- NULL}
+    } else {title.text <- NULL}
     
-    if(is.null(element)){
+    if (is.null(element)){
         
         for (i in 1:10) {
             screen.frames.internal(inmetrics[[i]], inparams[[i]], 
-                          MyYlabs[i + 3], DataType[i], maf, mmar, mytext, xaxis, 
+                          MyYlabs[i + 3], DataType[i], maf, mmar, title.text, xaxis, 
                           Year1, YearEnd, hyrstart)
         }
         
@@ -188,7 +183,7 @@ screen.frames <- function (metrics, type = "h", element=NULL, language = "Englis
             dtype <- DataType[element[i]]
             mylab <- MyYlabs[element[i] + 3]
             screen.frames.internal(inmetrics[[element[i]]], inparams[[element[i]]], 
-                          mylab, dtype, maf, mmar, mytext, xaxis, Year1, YearEnd, hyrstart)
+                          mylab, dtype, maf, mmar, title.text, xaxis, Year1, YearEnd, hyrstart)
         }
         
     } else {
@@ -196,7 +191,7 @@ screen.frames <- function (metrics, type = "h", element=NULL, language = "Englis
         dtype <- DataType[element]
         mylab <- MyYlabs[element + 3]
         screen.frames.internal(inmetrics[[element]], inparams[[element]], 
-                                      mylab, dtype, maf, mmar, mytext, xaxis, Year1, YearEnd,
+                                      mylab, dtype, maf, mmar, title.text, xaxis, Year1, YearEnd,
                                       hyrstart)
     }
     

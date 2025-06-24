@@ -4,11 +4,12 @@
 \alias{NA.runs}
 \title{Missing data runs for daily time series.}
 \usage{
-NA.runs(TS)
+NA.runs(TS, quiet = FALSE)
 }
 \arguments{
-\item{TS}{output from \code{\link{create.ts}} containing a data.frame of flow
-time series}
+\item{TS}{data.frame of streamflow time series loaded with \code{\link{read.flows}}.}
+
+\item{quiet}{A boolean to indicate message printing.}
 }
 \value{
 Returns a data.frame with the following columns:
@@ -24,15 +25,15 @@ missing data runs.
 }
 \examples{
 data(caniapiscau)
-cania.sub <- caniapiscau[300:1200,]
+cania.sub <- caniapiscau[300:1800,]
 cania.ts <- create.ts(cania.sub)
 res <- NA.runs(cania.ts)
+print(res)
+}
+\seealso{
+\code{\link{create.ts}} to create input, \code{\link{NA.count.runs}} to sum the
+  the missing data occurrences by year or month.
 }
 \author{
 Jennifer Dierauer
 }
-\seealso{
-\code{\link{create.ts}} to create input, \code{\link{NA.sum}} to sum the
-  the missing data occurrences by year or month.
-}
-

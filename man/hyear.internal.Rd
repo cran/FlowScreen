@@ -7,7 +7,7 @@
 hyear.internal(TS, hyrstart = 10)
 }
 \arguments{
-\item{TS}{Output from \code{\link{create.ts}} function.}
+\item{TS}{data.frame of streamflow time series loaded with \code{\link{read.flows}}.}
 
 \item{hyrstart}{define start month of hydrologic year. Defaults to 10 (October).}
 }
@@ -21,4 +21,3 @@ Add hydrologic Year, month, and doy columns to a daily time series
 \author{
 Jennifer Dierauer
 }
-

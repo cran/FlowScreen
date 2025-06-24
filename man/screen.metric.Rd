@@ -4,15 +4,25 @@
 \alias{screen.metric}
 \title{Plot a metric with trend and change points}
 \usage{
-screen.metric(y, ylabel = "", text = NULL)
+screen.metric(y, ylabel = "", title = FALSE, change.margins = TRUE)
 }
 \arguments{
-\item{y}{Numeric vector with "times" attribute}
+\item{y}{Numeric vector with "times" attribute, and, optionally, a 'StationID'
+and a 'Agency' attribute if you want the function to auto-generate a default 
+plot title.}
 
 \item{ylabel}{Character string for the y-axis label}
 
-\item{text}{optional character string for margin text, e.g. for station name, 
-location, or other notes.}
+\item{title}{optional plot title. Default is FALSE indicating no plot title is wanted. 
+Set to TRUE to use the the default plot title, which will 
+look for 'plot title' attribute of the data.frame set by 
+\code{\link{set.plot.titles}}. All values other values 
+will be used as a custom plot title. Set to FALSE to use this 
+function in a multi-plot layout.}
+
+\item{change.margins}{TRUE or FALSE to indicate whether the user's current 
+margin settings should be used, or if the margins should be set within the 
+function. Default is TRUE, to set margins to the minimal amount.}
 }
 \value{
 Returns a list containing results from the trend and changepoint
@@ -28,9 +38,11 @@ Returns a list containing results from the trend and changepoint
     \item pval - numeric value indicatng the significance value of the detected
       trend, Kendall test computed within \code{\link[zyp]{zyp.trend.vector}}
     \item cpts - numeric vector of changepoints if any are found, computed 
-      with \code{\link[changepoint]{cpt.meanvar}}
+      with \code{\link[changepoint]{cpt.meanvar}}. Will be NULL if changepoint 
+      analysis was not run due to insufficient data.
     \item means - numeric vector of means computed with 
-      \code{\link[changepoint]{cpt.meanvar}}
+      \code{\link[changepoint]{cpt.meanvar}}. Will be NULL if changepoint 
+      analysis was not run due to insufficient data.
   }
 }
 \description{
@@ -43,23 +55,21 @@ This function plots detected changepoints as a vertical dashed line.
   If the temporal trend is significant (p-value < 0.1), the trend is plotted as 
   a blue or red line for an increasing or decreasing trend, respectively.
   The upper and lower 95% confidence bounds for the trend are represented by the
-  dotted red or blue lines.  If a trend is not significant, it is not plotted.
+  dotted red or blue lines. If a trend is not significant, it is not plotted.
 }
 \examples{
 data(cania.sub.ts)
 
 # calculate and plot the annual maximum series
+cania.sub.ts <- set.plot.titles(cania.sub.ts)
 res <- pk.max(cania.sub.ts)
-res1 <- screen.metric(res, ylabel="Q (m3/s)", 
-text="Caniapiscau River, Annual Maximum Series")
+res1 <- screen.metric(res, ylabel=cania.sub.ts$FlowUnit[1], 
+title = TRUE)
 
 # calculate and plot the annual minimum series
 res <- MAMn(cania.sub.ts, n=1)
 res1 <- screen.metric(res, ylabel="Discharge (m3/s)", 
-text="Caniapiscau River, Annual Minimum Series")
-}
-\author{
-Jennifer Dierauer
+title = TRUE)
 }
 \seealso{
 See \code{\link{screen.summary}} to create a summary screening plot of 
@@ -69,4 +79,6 @@ See \code{\link{screen.summary}} to create a summary screening plot of
   The \code{\link{screen.metric}} function could then be used to loop through the metrics and 
   create an individual plot for each.
 }
-
+\author{
+Jennifer Dierauer
+}

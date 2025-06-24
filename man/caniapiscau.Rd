@@ -4,14 +4,16 @@
 \name{caniapiscau}
 \alias{caniapiscau}
 \title{Caniapiscau River Daily Flows}
-\format{Formatted as a data.frame with the following columns:
+\format{
+Formatted as a data.frame with the following columns:
   \itemize{
     \item ID - Water Survey Canada Station ID
     \item PARAM - Parameter ID (1 indicates flow)
     \item Date - Date of observation, formatted as YYYY-mm-dd
     \item Flow - Mean daily streamflow, measured in m3/s
     \item Agency - Source Agency (Water Survey Canada)
-  }}
+  }
+}
 \source{
 Environment Canada. 2010. EC Data Explorer V1.2.30. \cr
   Water Survey of Canada V1.2.30 https://www.ec.gc.ca/rhc-wsc/
@@ -36,4 +38,3 @@ head(caniapiscau)
 str(caniapiscau)
 }
 \keyword{datasets}
-

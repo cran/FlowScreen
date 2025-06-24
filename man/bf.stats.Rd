@@ -7,8 +7,7 @@
 bf.stats(TS, by = "hyear")
 }
 \arguments{
-\item{TS}{output from \code{\link{create.ts}} containing a data.frame of flow
-time series}
+\item{TS}{data.frame of streamflow time series loaded with \code{\link{read.flows}}.}
 
 \item{by}{summary period.  Options are "year", "hyear", "month", or "doy".
 Default is "hyear".}
@@ -39,10 +38,10 @@ This function calls \code{\link{bf_eckhardt}} to complete the
 \examples{
 data(cania.sub.ts)
 
+cania.sub.ts <- set.plot.titles(cania.sub.ts, title.elements = c("StationID", "Country"))
 res <- bf.stats(cania.sub.ts)
-res2 <- screen.metric(res[,2], "m3/s")
+res2 <- screen.metric(res[,2], "m3/s", title = TRUE)
 }
 \author{
 Jennifer Dierauer
 }
-

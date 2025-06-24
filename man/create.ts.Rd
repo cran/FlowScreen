@@ -7,7 +7,7 @@
 create.ts(Flows, hyrstart = 10)
 }
 \arguments{
-\item{Flows}{Data.frame containing daily streamflow time series loaded
+\item{Flows}{Data.frame containing daily streamflow time series loaded 
 with the \code{\link{read.flows}} function.}
 
 \item{hyrstart}{define start month of hydrologic year. Defaults to 10 (October).}
@@ -18,15 +18,21 @@ Returns a data.frame with year, month, doy, and hyear columns
 }
 \description{
 This function creates a daily time series formatted
-for use with the functions in this package.
+for use with the functions in this package. This function is executed within the
+\code{\link{read.flows}} function. To use separately, the 'Flows' input data.frame must have 
+include the columns: ID, PARAM, date, Flow, SYM, Agency, and FlowUnits. This 
+function would be used in the case the user has data files containing 
+dates and flows and this function would convert the original data into the 
+the form used by the FlowScreen functions.
 }
 \examples{
 data(caniapiscau)
 # subset flow series for shorter example run time
+# first, drop the rows with missing streamflow
+caniapiscau <- caniapiscau[!is.na(caniapiscau$Flow),]
 caniapiscau.sub <- caniapiscau[300:1800,]
-caniapiscau.sub.ts <- create.ts(caniapiscau.sub)
+caniapiscau.sub.ts <- create.ts(caniapiscau.sub, hyrstart = 3)
 }
 \author{
 Jennifer Dierauer
 }
-

@@ -4,8 +4,18 @@
 \alias{screen.summary.internal}
 \title{Internal wrapper for creating trend and change-point summary plots}
 \usage{
-screen.summary.internal(input, mparam, type, ylabs, i, DataType, maf, Year1,
-  YearEnd, hyrstart)
+screen.summary.internal(
+  input,
+  mparam,
+  type,
+  ylabs,
+  i,
+  DataType,
+  maf,
+  Year1,
+  YearEnd,
+  hyrstart
+)
 }
 \arguments{
 \item{input}{metric time series}
@@ -34,4 +44,3 @@ Internal wrapper for creating trend and change-point summary plots
 \author{
 Jennifer Dierauer
 }
-

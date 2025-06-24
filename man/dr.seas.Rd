@@ -4,12 +4,17 @@
 \alias{dr.seas}
 \title{Find the start, middle, end, and duration of seasonal droughts}
 \usage{
-dr.seas(TS, Qdr = 0.2, WinSize = 30, IntEventDur = 10, EventDur = 15,
-  Season = c(4:9))
+dr.seas(
+  TS,
+  Qdr = 0.2,
+  WinSize = 30,
+  IntEventDur = 10,
+  EventDur = 15,
+  Season = c(4:9)
+)
 }
 \arguments{
-\item{TS}{output from \code{\link{create.ts}} containing a data.frame of flow
-time series}
+\item{TS}{data.frame of streamflow time series loaded with \code{\link{read.flows}}.}
 
 \item{Qdr}{Numeric value for drought quantile.  Default is 0.2.}
 
@@ -58,12 +63,11 @@ data(cania.sub.ts)
 res <- dr.seas(cania.sub.ts)
 res2 <- screen.metric(res[,1], "Day of Year")
 }
-\author{
-Jennifer Dierauer
-}
 \seealso{
 See \code{\link{create.ts}} to format the input flow series. \cr
   See \code{\link{dr.events}} and \code{\link{mqt}} for details on how drought 
   events are defined.
 }
-
+\author{
+Jennifer Dierauer
+}

@@ -3,8 +3,7 @@
 #' This function extracts the partial duration series for all streamflow droughts based
 #' on a moving window quantile threshold.  Also returns summary information (start date,
 #' end date, duration, deficit volume) for each drought event.
-#' @param TS output from \code{\link{create.ts}} containing a data.frame of flow
-#'   time series
+#' @param TS data.frame of streamflow time series loaded with \code{\link{read.flows}}.
 #' @param Qdr Numeric value of the drought threshold quantile.  Default is 0.2.
 #' @param WinSize Numeric value specifying the size of the moving window in
 #'   days.  Default is 30. 
@@ -48,96 +47,131 @@
 #'   occurring in a user-defined season.
 #'   
 #'   This function calls \code{\link{dr.pds}} which calls \code{\link{mqt}}.
+#' @importFrom graphics par
 #' @export
 #' @examples
 #' data(cania.sub.ts)
 #' res1 <- dr.events(cania.sub.ts)
 #' events <- res1$DroughtEvents
+#' 
+#' opar <- graphics::par(no.readonly = TRUE)
+#' par(mar=c(5,6,2,2))
 #' plot(events$Start, events$Duration, pch=19, ylab="Drought Duration (days)", xlab="")
+#' graphics::par(opar)
 
 dr.events <- function(TS, Qdr=0.2, WinSize=30, IntEventDur=10, EventDur=15) {
-        
-    ## create PDS from original data
-    myPDS <- dr.pds(TS, Qdr, WinSize)
     
-    ### subset to keep only dates when streamflow was below threshold
-    myPDS <- subset(myPDS, myPDS$BelowThresh==TRUE)
-
-    if (length(myPDS[,1]) > 0) {
+  
+  ts_attributes <- attributes(TS)
+  
+  ## Create PDS from original data
+  myPDS <- dr.pds(TS, Qdr, WinSize)
+  
+  ### Subset to keep only dates when streamflow was below threshold
+  myPDS <- subset(myPDS, BelowThresh == TRUE)
+  
+  if (nrow(myPDS) > 0) {
     
-        ### pool drought events based on IntEventDur
-        eventNo <- 1
-        myPDS$Event <- 1
-        
-        for (i in 2:length(myPDS$Flow)) {
-            
-            myPDS$Event[i] <- eventNo
-            
-            # if duration between two dates is greater than or equal to the
-            # minimum event duration, define as a new event
-            meventdur <- myPDS$Date[i] - myPDS$Date[i-1]
-            meventdur <- as.numeric(meventdur)
-                        
-            if (meventdur >= IntEventDur) {
-                eventNo <- eventNo + 1
-            }
-            
-            myPDS$Event[i] <- eventNo
-            
-        }
-        
-        myPDS$Def <- as.numeric(myPDS$Thresh - myPDS$Flow)
-        
-        ### set up output data.frame 
-        DroughtEvents <- data.frame(Event=numeric(), 
-                                    Start=as.Date(character()),
-                                    End=as.Date(character()),
-                                    maxDef=numeric(),
-                                    totDef=numeric(),
-                                    Duration=numeric())
-
-        ### calculate event stats (start, end, duration, maxDef, totDef) 
-        ### ignore drought events with duration < EventDur
-        for (j in 1:eventNo) {
-            PDS.sub <- subset(myPDS, myPDS$Event==j)
-            dur <- as.numeric(PDS.sub$Date[length(PDS.sub[,1])] - as.Date(PDS.sub$Date[1]))
-            if (dur >= EventDur) {
-                
-                dstats <- data.frame(Event=j, 
-                                     Start=as.Date(PDS.sub$Date[1]),
-                                     End=as.Date(PDS.sub$Date[length(PDS.sub[,1])]),
-                                     maxDef=max(PDS.sub$Def), 
-                                     Severity=sum(PDS.sub$Def),
-                                     Duration=as.numeric(dur),
-                                     Magnitude=mean(PDS.sub$Def),
-                                     stdtotDef=(sum(PDS.sub$Def)/mean(TS$Flow)))
-                
-                DroughtEvents <- rbind(DroughtEvents, dstats)
-            }
-        }
-        
-        ### subset PDS to remove minor droughts
-        Events <- unique(DroughtEvents[,1])
-        myPDS <- subset(myPDS, myPDS$Event %in% Events)
-        
-        output <- list(DroughtEvents=DroughtEvents, DroughtPDS=myPDS)
-        
-    } else {
-      dstats <- data.frame(Event=NA, 
-                           Start=NA,
-                           End=NA,
-                           maxDef=NA, 
-                           Severity=NA,
-                           Duration=NA,
-                           Magnitude=NA,
-                           stdtotDef=NA)
-      myPDS <- TS[1,]
-      myPDS[,] <- NA
-      
-      output <- list(DroughtEvents=dstats, DroughtPDS=myPDS)
-      
+    ### Pool drought events based on IntEventDur
+    eventNo <- 1
+    myPDS$Event <- 1
+    
+    for (i in 2:nrow(myPDS)) {
+      meventdur <- as.numeric(myPDS$Date[i] - myPDS$Date[i-1])
+      if (meventdur >= IntEventDur) {
+        eventNo <- eventNo + 1
+      }
+      myPDS$Event[i] <- eventNo
     }
-
-return(output)
-
+    
+    myPDS$Def <- as.numeric(myPDS$Thresh - myPDS$Flow)
+    
+    ### Set up output data.frame 
+    DroughtEvents <- data.frame(Event = numeric(), 
+                                Start = as.Date(character()),
+                                End = as.Date(character()),
+                                maxDef = numeric(),
+                                totDef = numeric(),
+                                Duration = numeric(),
+                                Magnitude = numeric(),
+                                stdtotDef = numeric())
+    
+    ### Calculate event stats, ignoring drought events with duration < EventDur
+    for (j in 1:eventNo) {
+      PDS.sub <- subset(myPDS, Event == j)
+      dur <- as.numeric(difftime(max(PDS.sub$Date), min(PDS.sub$Date), units = "days"))
+      if (dur >= EventDur) {
+        dstats <- data.frame(Event = j, 
+                             Start = min(PDS.sub$Date),
+                             End = max(PDS.sub$Date),
+                             maxDef = max(PDS.sub$Def, na.rm = TRUE), 
+                             Severity = sum(PDS.sub$Def, na.rm = TRUE),
+                             Duration = dur,
+                             Magnitude = mean(PDS.sub$Def, na.rm = TRUE),
+                             stdtotDef = sum(PDS.sub$Def, na.rm = TRUE) / mean(TS$Flow, na.rm = TRUE))
+        
+        DroughtEvents <- rbind(DroughtEvents, dstats)
+      }
+    }
+    
+    ### Subset PDS to remove minor droughts
+    Events <- unique(DroughtEvents$Event)
+    myPDS <- subset(myPDS, Event %in% Events)
+    
+    # Carry StationID and Agency as attributes
+    attr(myPDS, 'StationID') <- TS$ID[1]
+    attr(myPDS, 'Agency') <- TS$Agency[1]
+    
+    # Carry-over the plot title if it has been set
+    if ('plot title' %in% names(ts_attributes)) {
+      attr(myPDS, 'plot title') <- ts_attributes$'plot title'
+      attr(myPDS, 'title size') <- ts_attributes$'title size'
+    }
+    
+    attr(DroughtEvents, 'StationID') <- TS$ID[1]
+    attr(DroughtEvents, 'Agency') <- TS$Agency[1]
+    
+    # Carry-over the plot title if it has been set
+    if ('plot title' %in% names(ts_attributes)) {
+      attr(DroughtEvents, 'plot title') <- ts_attributes$'plot title'
+      attr(DroughtEvents, 'title size') <- ts_attributes$'title size'
+    }
+    
+    output <- list(DroughtEvents = DroughtEvents, DroughtPDS = myPDS)
+    
+  } else {
+    dstats <- data.frame(Event = NA, 
+                         Start = NA,
+                         End = NA,
+                         maxDef = NA, 
+                         Severity = NA,
+                         Duration = NA,
+                         Magnitude = NA,
+                         stdtotDef = NA)
+    
+    myPDS <- TS[1,]
+    myPDS[,] <- NA
+    
+    attr(myPDS, 'StationID') <- TS$ID[1]
+    attr(myPDS, 'Agency') <- TS$Agency[1]
+    
+    # Carry-over the plot title if it has been set
+    if ('plot title' %in% names(ts_attributes)) {
+      attr(myPDS, 'plot title') <- ts_attributes$'plot title'
+      attr(myPDS, 'title size') <- ts_attributes$'title size'
+    }
+    
+    attr(dstats, 'StationID') <- TS$ID[1]
+    attr(dstats, 'Agency') <- TS$Agency[1]
+    
+    # Carry-over the plot title if it has been set
+    if ('plot title' %in% names(ts_attributes)) {
+      attr(dstats, 'plot title') <- ts_attributes$'plot title'
+      attr(dstats, 'title size') <- ts_attributes$'title size'
+    }
+    
+    output <- list(DroughtEvents = dstats, DroughtPDS = myPDS)
+  }
+  
+  return(output)
 }

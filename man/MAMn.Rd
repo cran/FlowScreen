@@ -4,42 +4,50 @@
 \alias{MAMn}
 \title{Calculate mean annual minimum n-day flows}
 \usage{
-MAMn(TS, n = 7, by = "hyear")
+MAMn(TS, n = 7, by = "hyear", threshold.missing = 0.5)
 }
 \arguments{
-\item{TS}{output from \code{\link{create.ts}} containing a data.frame of flow
-time series}
+\item{TS}{data.frame of streamflow time series loaded with \code{\link{read.flows}}.}
 
 \item{n}{Numeric value for the number of days in the n-day flow period. Default is 7.}
 
 \item{by}{Character string indicating whether to use hydrologic years or 
-calendar years.  Default is "hyear".  Other option is "year".}
+calendar years. Default is "hyear". Other option is "year".}
+
+\item{threshold.missing}{Numeric value indicating the fraction of data that can 
+be missing in a single year. Years with a missing data above this threshold will have
+NA values returned. Default is 0.5 (max of 50\% missing data allowed).}
 }
 \value{
 Returns a numeric vector containing the calculated MAM n-day flow for each 
-  year in the input time series.  The "times" attribute provides the corresponding
-  year for each calculated value.
+  year in the input time series. The "times" attribute provides the corresponding
+  year for each calculated value. Note: a partial start year or end year in the time
+  series that exceeds the threshold set by 'threshold.missing' will be automatically
+  truncated from the output.
 }
 \description{
 This function calculates the calculates the mean annual minimum n-day flow by
-calendar year or by hydrologic year.  This function can also be used to find
+calendar year or by hydrologic year. This function can also be used to find
 the annual minimum series by setting n=1.
 }
 \examples{
-data(cania.sub.ts)
+data(caniapiscau)
+cania.ts <- create.ts(caniapiscau, hyrstart = 4)
+cania.ts <- drop.years(cania.ts)
+cania.ts <- set.plot.titles(cania.ts, 
+title.elements = c("StationID", "StnName", "StateProv"))
 
 # find the annual minimum series and plot 
-res <- MAMn(cania.sub.ts, n=1)
-res2 <- screen.metric(res, "Q (m3/s)")
+res <- MAMn(cania.ts, n=1)
+res2 <- screen.metric(res, ylabel = "Q (m3/s)", title = TRUE)
 
 # do the same with MAM 7-day flow instead of annual minimum
-res <- MAMn(cania.sub.ts, n=7)
-res2 <- screen.metric(res, "Q (m3/s)")
-}
-\author{
-Jennifer Dierauer
+res <- MAMn(cania.ts, n=7)
+res2 <- screen.metric(res, ylabel = "Q (m3/s)", title = TRUE)
 }
 \seealso{
 \code{\link{screen.metric}}
 }
-
+\author{
+Jennifer Dierauer
+}

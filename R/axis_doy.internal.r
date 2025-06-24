@@ -1,8 +1,9 @@
-#' Create custom axis starting on hyrologic year start month
+#' Create custom axis starting on hydrologic year start month
 #' 
 #' @param hyrstart numeric indicating month for start of the hydrologic year 
 #'   (water year).
 #' @author Paul Whitfield
+#' @importFrom graphics axis
 
 axis_doy.internal <- function(hyrstart=10) {
     
@@ -13,5 +14,5 @@ axis_doy.internal <- function(hyrstart=10) {
     wday<-cday[hyrstart:(hyrstart+11)]-cday[hyrstart]+1
     wtxt<-ctxt[hyrstart:(hyrstart+11)]
     
-    graphics::axis(side=1, at=wday , labels=wtxt, line = 0, xlab="",  xlab="")
+    graphics::axis(side=1, at=wday , labels=wtxt, line = 0, xlab="",  xlab="", las = 3)
 }

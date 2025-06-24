@@ -4,17 +4,39 @@
 \alias{FDC}
 \title{Flow Duration Curve}
 \usage{
-FDC(flow, title = NULL, normal = FALSE, gust = TRUE)
+FDC(
+  TS,
+  normalize.flow = TRUE,
+  ylog = TRUE,
+  title = FALSE,
+  normal = FALSE,
+  gust = TRUE,
+  ylimits = NULL
+)
 }
 \arguments{
-\item{flow}{daily streamflow time series}
+\item{TS}{A data frame of streamflow time series loaded with \code{\link{read.flows}}.}
 
-\item{title}{character string for plot title}
+\item{normalize.flow}{Boolean to indicate whether or not the streamflow should 
+be normalized by dividing by the mean. Default is TRUE. Gustard's Type Curves 
+can only be included when this is TRUE.}
 
-\item{normal}{boolean indicating whether to plot on normal probability 
-axis (normal=TRUE) or linear probability axis (default, normal=FALSE)}
+\item{ylog}{Boolean indicating whether or not to plot the y-axis as a 
+logarithmic scale. Default is TRUE.}
 
-\item{gust}{boolean indicating whether to plot Gustard type curves.}
+\item{title}{optional plot title. Default is FALSE indicating no plot title is wanted. 
+Set to TRUE to use the the default plot title, which will 
+look for 'plot title' attribute of the data.frame set by 
+\code{\link{set.plot.titles}}. All values other values 
+will be used as a custom plot title.}
+
+\item{normal}{A logical indicating whether to use normal probability x-axis 
+(normal=TRUE) or a linear probability x-axis (default, normal=FALSE).}
+
+\item{gust}{A logical indicating whether to include Gustard's Type Curves 
+(default is TRUE). Type curves can only be plotted when normalize.flow is TRUE.}
+
+\item{ylimits}{A numeric vector of length 2 to set y-axis limits (default is NULL).}
 }
 \description{
 Produces a flow duration curve plot with optional Gustard type-curves that 
@@ -22,15 +44,13 @@ can be used to estimate catchment permeability.
 }
 \examples{
 data(caniapiscau)
-caniapiscau <- subset(caniapiscau, !is.na(caniapiscau$Flow))
-FDC(caniapiscau$Flow, title="Caniapiscau River")
-}
-\author{
-Paul Whitfield
+FDC(caniapiscau, title="Caniapiscau River")
 }
 \references{
 Gustard, A., Bullock, A., and Dixon, J.M. (1992). Report No. 108:
   Low flow estimation in the United Kingdom. 
   Oxfordshire, United Kingdom: Institute of Hydrology.
 }
-
+\author{
+Paul Whitfield
+}

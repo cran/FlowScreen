@@ -7,8 +7,7 @@
 dr.events(TS, Qdr = 0.2, WinSize = 30, IntEventDur = 10, EventDur = 15)
 }
 \arguments{
-\item{TS}{output from \code{\link{create.ts}} containing a data.frame of flow
-time series}
+\item{TS}{data.frame of streamflow time series loaded with \code{\link{read.flows}}.}
 
 \item{Qdr}{Numeric value of the drought threshold quantile.  Default is 0.2.}
 
@@ -63,10 +62,11 @@ end date, duration, deficit volume) for each drought event.
 data(cania.sub.ts)
 res1 <- dr.events(cania.sub.ts)
 events <- res1$DroughtEvents
+
+opar <- graphics::par(no.readonly = TRUE)
+par(mar=c(5,6,2,2))
 plot(events$Start, events$Duration, pch=19, ylab="Drought Duration (days)", xlab="")
-}
-\author{
-Jennifer Dierauer
+graphics::par(opar)
 }
 \seealso{
 See \code{\link{dr.seas}} to calculate metrics for droughts 
@@ -74,4 +74,6 @@ See \code{\link{dr.seas}} to calculate metrics for droughts
   
   This function calls \code{\link{dr.pds}} which calls \code{\link{mqt}}.
 }
-
+\author{
+Jennifer Dierauer
+}

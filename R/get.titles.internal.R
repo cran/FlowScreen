@@ -1,12 +1,14 @@
 #' Returns plot titles and labels based on plot type and language preference
 #' 
 #' @param type character indicating the type of summary plot
+#' @param flow.units Character string indicating the units for streamflow values, one of either
+#' 'ft3/s' or 'm3/s', taken from the flow time series data.frame created with \code{read.flows}
 #' @param language "English" or "French"
 #' @param Qmax the flow quantile used to define peaks of threshold, e.g. 0.95
 #' @author Jennifer Dierauer
 
 
-get.titles.internal <- function(type, language="English", Qmax) {
+get.titles.internal <- function(type, flow.units, language="English", Qmax) {
     
     tQmax <- strsplit(as.character(Qmax),"\\.")
     tQmax <- tQmax[[1]]
@@ -62,7 +64,15 @@ get.titles.internal <- function(type, language="English", Qmax) {
     Xlabs.Fr[2] <- "Jour du An"
     Xlabs.Fr[3:13] <- "An"
     
-    y1 <- expression(paste("Discharge (m" ^{3}, "/s)"))
+    if (flow.units == 'm3/s') {
+        y1 = expression(paste("Discharge (m" ^{3}, "/s)"))
+    } else if (flow.units == 'ft3/s') {
+        y1 = expression(paste("Discharge (ft" ^{3}, "/s)"))
+    } else {
+        yl1 = 'unknown units'
+    }
+    
+    
     y2 <- "No. of Days"
     y3 <- "Day of Year"
     y4 <- expression(paste("BFS (m" ^{3}, "/s)"))

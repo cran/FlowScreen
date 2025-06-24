@@ -7,8 +7,7 @@
 pk.max.doy(TS)
 }
 \arguments{
-\item{TS}{output from \code{\link{create.ts}} containing a data.frame of flow
-time series}
+\item{TS}{data.frame of streamflow time series loaded with \code{\link{read.flows}}.}
 }
 \value{
 Returns a numeric vector containing the day of the (hydrologic) year for 
@@ -19,16 +18,20 @@ Returns a numeric vector containing the day of the (hydrologic) year for
 This function returns the day of the hydrologic year for each annual maximum flow.
 }
 \examples{
-data(cania.sub.ts)
-res <- pk.max.doy(cania.sub.ts)
-res2 <- screen.metric(res, "Day of Year")
-}
-\author{
-Jennifer Dierauer
+data(caniapiscau)
+cania.ts <- create.ts(caniapiscau, hyrstart = 4)
+cania.ts <- drop.years(cania.ts)
+cania.ts <- set.plot.titles(cania.ts, 
+title.elements = c("StationID", "StnName", "StateProv"))
+
+res <- pk.max.doy(cania.ts)
+res2 <- screen.metric(res, ylabel = "Day of Year", title = TRUE)
 }
 \seealso{
 See \code{\link{create.ts}} to format the input flow series.
 
   See \code{\link{pk.max}} for the annual maximum flow series.
 }
-
+\author{
+Jennifer Dierauer
+}

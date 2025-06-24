@@ -4,9 +4,16 @@
 \alias{screen.frames}
 \title{Plot one or more frames from the summary screening plot}
 \usage{
-screen.frames(metrics, type = "h", element = NULL, language = "English",
-  StnInfo = NULL, mmar = c(3, 4, 0.5, 0.5), text = "d", multi = F,
-  xaxis = T)
+screen.frames(
+  metrics,
+  type = "h",
+  element = NULL,
+  language = "English",
+  mmar = c(3, 4, 0.5, 0.5),
+  title = FALSE,
+  multi = F,
+  xaxis = T
+)
 }
 \arguments{
 \item{metrics}{output from \code{\link{metrics.all}}}
@@ -24,17 +31,13 @@ or a range c(1:5).}
 \item{language}{Language for plot labels.  Choice of either "English" or
 "French". Default is "English".}
 
-\item{StnInfo}{Optional data.frame containing user-supplied station info for plot. 
-data.frame must have 7 columns containing station info in the following order:
-Station ID, Station Name, Prov/State, Country, Latitude, Longitude, Catchment Area
-If any of the information is unavailabe, fill with NA. The Station ID column must
-match the Station ID in column 1 of the data.frame input from \code{\link{create.ts}}.}
-
 \item{mmar}{Numeric vector specifying plot margins. Default is c(3,4,0.5,0.5)}
 
-\item{text}{Character string containing text for margin. This can be set to NULL if no
-margin text is wanted, or set to "d" to use default text containing the station ID, station 
-name, and the prov/state output from \code{\link{station.info}}. Set to NULL to use this 
+\item{title}{optional plot title. Default is FALSE indicating no plot title is wanted. 
+Set to TRUE to use the the default plot title, which will 
+look for 'plot title' attribute of the data.frame set by 
+\code{\link{set.plot.titles}}. All values other values 
+will be used as a custom plot title. Set to FALSE to use this 
 function in a multi-plot layout.}
 
 \item{multi}{Boolean indicating whether the function is being used to create one plot
@@ -106,25 +109,23 @@ screen.frames(caniapiscau.res, type="l", element=c(1:3))
 opar <- par(no.readonly = TRUE)
 layout(matrix(c(1,2,3,4), 2, 2, byrow=TRUE))
 par(oma=c(0,0,3,0))
-stninfo <- station.info(caniapiscau.ts, Plot=TRUE)
-screen.frames(caniapiscau.res, type="h", element=1, text=NULL, multi=TRUE)
-screen.frames(caniapiscau.res, type="l", element=1, text=NULL, multi=TRUE)
-screen.frames(caniapiscau.res, type="b", element=1, text=NULL, multi=TRUE)
-mtext(paste("Station ID: ", caniapiscau.ts[1,1], ", Agency: WSC, Country: CA", sep=""),
-side=3, line=1, outer=TRUE, cex=0.9)
+stninfo <- station.info(caniapiscau.ts$Agency[1], caniapiscau.ts$ID[1], Plot=TRUE)
+screen.frames(caniapiscau.res, type="h", element=1, multi=TRUE)
+screen.frames(caniapiscau.res, type="l", element=1, multi=TRUE)
+screen.frames(caniapiscau.res, type="b", element=1, multi=TRUE)
+
 par <- opar
 layout(1,1,1)
 
 # or plot everything!
 opar <- par(no.readonly = TRUE)
 layout(matrix(c(1:30), 5, 6, byrow=TRUE))
-screen.frames(caniapiscau.res, type="h", text=NULL, multi=TRUE)
-screen.frames(caniapiscau.res, type="l", text=NULL, multi=TRUE)
-screen.frames(caniapiscau.res, type="b", text=NULL, multi=TRUE)
+screen.frames(caniapiscau.res, type="h", multi=TRUE)
+screen.frames(caniapiscau.res, type="l", multi=TRUE)
+screen.frames(caniapiscau.res, type="b", multi=TRUE)
 par <- opar
 layout(1,1,1)
 }
 \author{
 Jennifer Dierauer and Paul Whitfield
 }
-

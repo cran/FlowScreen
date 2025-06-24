@@ -7,8 +7,7 @@
 pk.bf.stats(TS, bfpct = c(25, 50, 75))
 }
 \arguments{
-\item{TS}{output from \code{\link{create.ts}} containing a data.frame of flow
-time series}
+\item{TS}{data.frame of streamflow time series loaded with \code{\link{read.flows}}.}
 
 \item{bfpct}{numeric vector of percentages used to define the 
 start, middle, and end of the baseflow peak. Default is c(25, 50, 75)}
@@ -38,13 +37,16 @@ This function calculates metrics intended to focus on snowmelt-related
   year.
 }
 \examples{
-data(cania.sub.ts)
-res1 <- pk.bf.stats(cania.sub.ts)
+data(caniapiscau)
+cania.ts <- create.ts(caniapiscau, hyrstart = 4)
+cania.ts <- drop.years(cania.ts)
+cania.ts <- set.plot.titles(cania.ts, 
+title.elements = c("StationID", "StnName", "StateProv"))
+res1 <- pk.bf.stats(cania.ts)
 
 # trend and changepoint plot for baseflow peak start doy
-res2 <- screen.metric(res1[,1], "Day of Year")
+res2 <- screen.metric(res1[,1], ylabel = "Day of Year")
 }
 \author{
 Jennifer Dierauer
 }
-

@@ -4,40 +4,59 @@
 \alias{regime}
 \title{Plot flow regime}
 \usage{
-regime(TS, q = c(0.9, 0.1), text = "d", by = "hdoy", y.lims = NA)
+regime(
+  TS,
+  q = c(0.9, 0.1),
+  title = FALSE,
+  hyear.start = 10,
+  y.lims = NA,
+  legend = TRUE,
+  change.margins = TRUE
+)
 }
 \arguments{
-\item{TS}{output from \code{\link{create.ts}} containing a data.frame of flow
-time series}
+\item{TS}{data.frame of streamflow time series loaded with \code{\link{read.flows}}.}
 
 \item{q}{Numeric vector of the upper and lower quantile values.  Default
 is c(0.9, 0.1).}
 
-\item{text}{optional character string for margin text, e.g. for station name, 
-location, or other notes. Set to NULL if no margin text is wanted, or set to "d" 
-to use default text containing the station ID, station name, and province/state 
-returned from \code{\link{station.info}}.}
+\item{title}{optional plot title. Default is FALSE indicating no plot title is wanted. 
+Set to TRUE to use the the default plot title, which will 
+look for 'plot title' attribute of the data.frame set by 
+\code{\link{set.plot.titles}}. All values other values 
+will be used as a custom plot title.}
 
-\item{by}{Character string indicating whether to plot the regime by day of 
-the hydrologic year (defined using \code{\link{create.ts}}) or by day of 
-the calendar year. Options are "doy" (calendar year) or "hdoy" (default, hydrologic year).}
+\item{hyear.start}{Integer indicating the start month for the regime plot. 
+Default is 10 (October).}
 
-\item{y.lims}{optional user-defined y-axis minimum and maximim. e.g. c(0, 500)}
+\item{y.lims}{optional user-defined y-axis minimum and maximum. e.g. c(0, 500)}
+
+\item{legend}{TRUE or FALSE to indicate whether a legend should be included. 
+Default is TRUE.}
+
+\item{change.margins}{TRUE or FALSE to indicate whether the user's current 
+margin settings should be used, or if the margins should be set within the 
+function. Default is TRUE, to set margins to the minimal amount.}
 }
 \description{
 This function plots the min, max, mean, and two user-defined quantiles of 
-daily streamflow to provide visual summary of the flow regime. Area between 
-the upper and lower quantile is shaded grey, the dark blue line represents
-the mean daily discharge, gray line represents the median daily discharge,
- and the period of record daily maximum and minimum are
+daily streamflow to provide visual summary of the flow regime. Flow record must 
+have at least 10 years of data to produce a plot. A visual summary is not shown for 
+any days of the year that are missing >80% of the flow record years. 
+Area between the upper and lower quantile is shaded grey, the dark blue line represents
+the mean daily discharge, gray line represents the median daily discharge, 
+and the period of record daily maximum and minimum are
 shown with the blue points.
 }
 \examples{
-# plot the flow regime of the Caniapiscau River
-data(cania.sub.ts)
-regime(cania.sub.ts)
+
+# Load example ROBIN streamflow data
+robin_path <- system.file("extdata", "ROBIN_example.csv", package = "FlowScreen")
+
+TS <- read.flows(robin_path)
+TS <- set.plot.titles(TS)
+regime(TS, title = TRUE)
 }
 \author{
 Jennifer Dierauer
 }
-

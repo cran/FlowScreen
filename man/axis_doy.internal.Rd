@@ -2,7 +2,7 @@
 % Please edit documentation in R/axis_doy.internal.r
 \name{axis_doy.internal}
 \alias{axis_doy.internal}
-\title{Create custom axis starting on hyrologic year start month}
+\title{Create custom axis starting on hydrologic year start month}
 \usage{
 axis_doy.internal(hyrstart = 10)
 }
@@ -11,9 +11,8 @@ axis_doy.internal(hyrstart = 10)
 (water year).}
 }
 \description{
-Create custom axis starting on hyrologic year start month
+Create custom axis starting on hydrologic year start month
 }
 \author{
 Paul Whitfield
 }
-

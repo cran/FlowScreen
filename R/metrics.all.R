@@ -1,8 +1,7 @@
 #' Streamflow metrics
 #'
 #' Calculates 30 different flow metrics, 10 each for high flows, low flows, and baseflow.
-#' @param TS output from \code{\link{create.ts}} containing a data.frame of flow
-#'   time series
+#' @param TS data.frame of streamflow time series loaded with \code{\link{read.flows}}.
 #' @param Season Numeric vector of months during which droughts start. Default 
 #'   is c(4:9) for non-frost season droughts.
 #' @param Qmax Numeric value for peaks over threshold quantile.
@@ -14,7 +13,7 @@
 #' @param WinSize Numeric value for moving window size (in days) for the moving
 #'   window quantile drought threshold. See \code{\link{mqt}}. Default is 30.
 #' @param NAthresh Numeric value indicating the threshold for missing data points
-#'   in any one year.  Default is 0.5, indicating that years with more than 50 percent missing data
+#'   in any one year.  Default is 0.50, indicating that years with more than 50 percent missing data
 #'   will be omitted from the metric calculations. This value should always be set to 
 #'   greater than 0.1, as years with fewer observations than approximately 1 month will
 #'   cause errors.
@@ -23,7 +22,7 @@
 #'   to label individual plots. Options are "English" or "French".  Default is "English".
 #' @details This function calculates streamflow metrics and calculates the 
 #'   prewhitened trend using \code{\link[zyp]{zyp.trend.vector}} and looks
-#'   for changpoints in mean and variance using \code{\link[changepoint]{cpt.meanvar}}
+#'   for changepoints in mean and variance using \code{\link[changepoint]{cpt.meanvar}}
 #'   This function is intended for use as a data quality screening tool aimed 
 #'   at identifying streamflow records with anthropogenic impacts and should not be used
 #'   to complete a temporal trend analysis, as the calculated metrics may not be 
@@ -46,7 +45,7 @@
 #'     \item Day of Year 25 percent Annual Volume - calculated with \code{\link{pk.cov}}
 #'     \item Center of Volume - calculated with \code{\link{pk.cov}}
 #'     \item Day of Year 75 percent Annual Volume - calculated with \code{\link{pk.cov}}
-#'     \item Duration between 25 percent and 75 percent Annual Volume - calculated with \code{\link{cov}}
+#'     \item Duration between 25 percent and 75 percent Annual Volume - calculated with \code{\link{pk.cov}}
 #'     \item Q10 - calculated with \code{\link{Qn}}
 #'     \item Q25 - calculated with \code{\link{Qn}}
 #'     \item Drought Start - calculated with \code{\link{dr.seas}}
@@ -93,9 +92,11 @@
 #'   omitted, NA is returned.
 #' @author Jennifer Dierauer
 #' @seealso See the documentation for individual functions linked in the 
-#'   output description for a details on methods.
+#'   output description for details on methods.
 #'   
 #'   See \code{\link{screen.metric}} to create individual plots for each metric.
+#' @importFrom changepoint cpt.meanvar
+#' @importFrom zyp zyp.trend.vector
 #' @export
 #' @examples
 #' # load subset of daily streamflow time series for the Caniapiscau River
@@ -111,15 +112,19 @@ metrics.all <- function(TS, Qmax=0.95, Dur=5,
                     Qdr=0.2, WinSize=30, Season=c(4:9), NAthresh=0.5,
                     language="English") {
     
+    plot_title = attr(TS, 'plot title')
+    title_size = attr(TS, 'title size')
+    
+    if (length(TS) != 12) {return('Invalid Input')}
     TS <- subset(TS, !is.na(TS$Flow))
     
-    ## only run data analysis if there are more than 5 years in record
-    if (length(unique(TS$hyear)) > 5) {
+    ## only run data analysis if there are more than 10 years in record
+    if (length(unique(TS$hyear)) >= 10) {
         
         # Remove years with more than the threshold for missing data
         MinObs <- NAthresh * 365
         Year <- as.factor(TS$hyear)
-        NumRecords<-tapply(TS$Flow, Year, length)
+        NumRecords <- tapply(TS$Flow, Year, length)
         YearList <- c(min(TS$hyear):max(TS$hyear))
         keepers <- as.numeric(attr(NumRecords, "dimnames")[[1]][NumRecords >= MinObs])
 
@@ -130,10 +135,9 @@ metrics.all <- function(TS, Qmax=0.95, Dur=5,
             for (m in 1:length(YearTrim)) {
                 OmitYears$Observations[m] <- length(TS$Flow[TS$hyear == YearTrim[m]])
             }
-            print("The following years were omitted from analysis due to insufficient data points:")
+            print("The following hydrologic years were omitted from analysis due to insufficient data points:")
             print(OmitYears)
             TS.sub <- TS[TS$hyear %in% keepers,]
-            Year <- as.factor(TS.sub$year) # redo year factors
         } else {
             OmitYears <- data.frame(Years="N/A", Observations="N/A")
             TS.sub <- TS
@@ -200,14 +204,14 @@ metrics.all <- function(TS, Qmax=0.95, Dur=5,
                       p25=p25, p26=p26, p27=p27, p28=p28, p29=p29, p30=p30)
         
         ## Give list elements meaningful names
-        MyTitles <- get.titles.internal("h", language, Qmax)$Titles[4:13]
-        MyTitles <- c(MyTitles, get.titles.internal("l", language, Qmax)$Titles[4:13])
-        MyTitles <- c(MyTitles, get.titles.internal("b", language, Qmax)$Titles[4:13])
+        MyTitles <- get.titles.internal("h", TS$FlowUnits[1], language, Qmax)$Titles[4:13]
+        MyTitles <- c(MyTitles, get.titles.internal("l", TS$FlowUnits[1], language, Qmax)$Titles[4:13])
+        MyTitles <- c(MyTitles, get.titles.internal("b", TS$FlowUnits[1], language, Qmax)$Titles[4:13])
         
         names(Pdata) <- MyTitles
         
-        Year1 <- min(c(as.numeric(TS$hyear[1]), as.numeric(TS$year[1])))
-        YearEnd <- max(c(max(as.numeric(TS$year)), max(as.numeric(TS$hyear))))
+        Year1 <- min(TS.sub$hyear)
+        YearEnd <- max(TS.sub$hyear)
         
         ## Calculate slopes, p-values, changepoints, etc.
         params <- list()
@@ -217,6 +221,15 @@ metrics.all <- function(TS, Qmax=0.95, Dur=5,
             MyY <- Pdata[[i]]
             
             if (!is.na(MyY[1])) {
+                
+                # don't calculate change points if there's missing data, 
+                # or if there are less than 10 data points
+                if ((sum(is.na(MyY)) > 0) | (length(MyY) < 10)) {
+                    calc_cp <- FALSE
+                } else {
+                    calc_cp <- TRUE
+                }
+                
               MyX <- attr(MyY, "times")
               
               ### format x values to work with plotting of sen slopes and change points
@@ -229,6 +242,7 @@ metrics.all <- function(TS, Qmax=0.95, Dur=5,
                 
               } else {
                 
+                Start <- as.numeric(min(MyX))
                 MyX.mod <- c(1:length(MyX))
                 for (j in 1:length(MyX)) {MyX.mod[j] <- (as.numeric(MyX[j]) - Year1) + 1}
               }
@@ -236,14 +250,26 @@ metrics.all <- function(TS, Qmax=0.95, Dur=5,
               mrange <- max(MyY, na.rm=T) - min(MyY, na.rm=T)
               
               if (mrange > 0) {
-                slope <- zyp::zyp.sen(MyY~MyX.mod)
-                ci <- zyp::confint.zyp(slope)
-                ci1 <- ci[,2]
-                ci2 <- ci[,1]
-                
-                res <- zyp::zyp.trend.vector(MyY, x=MyX.mod, method="yuepilon")
-                slope <- c(res[[11]], res[[2]])
-                pval <- res[[6]]
+                  
+                  tryCatch({
+                      res <- zyp.trend.vector(MyY, x=MyX.mod, method="yuepilon", 
+                                                   conf.intervals = TRUE,
+                                                   preserve.range.for.sig.test = TRUE)
+                      slope <- c(res[[11]], res[[2]])
+                      ci1 <- c(res[[12]], res[[1]])
+                      ci2 <- c(res[[13]], res[[4]])
+                      pval <- res[[6]]
+                  }, error = function(e) {
+                      slope <- NA
+                      ci1 <- NA
+                      ci2 <- NA
+                      pval <- NA
+                  })
+                  
+                  names(slope) <- c('intercept', 'slope')
+                  names(ci1) <- c('intercept_lbound', 'slope_lbound')
+                  names(ci2) <- c('intercept_ubound', 'slope_ubound')
+                  
               } else {
                 slope <- NA
                 ci1 <- NA
@@ -251,15 +277,15 @@ metrics.all <- function(TS, Qmax=0.95, Dur=5,
                 pval <- NA
               }
               
-              if (length(MyY) > 3) {
+              if (calc_cp == T) {
                 
-                out <- tryCatch(suppressWarnings(changepoint::cpt.meanvar(as.numeric(MyY), 
+                out <- tryCatch(suppressWarnings(cpt.meanvar(as.numeric(MyY), 
                                                                    penalty="Asymptotic",
                                                                    pen.value=0.05,
                                                                    method="BinSeg")), 
                          error = function(e) NA)
                 
-                if (class(out) == "cpt.range") {
+                if (inherits(out, "cpt.range")) {
                   MyCpts <- out@cpts
                   attr(MyCpts, "times") <- MyX[MyCpts]
                   MyMeans <- out@param.est$mean
@@ -274,6 +300,7 @@ metrics.all <- function(TS, Qmax=0.95, Dur=5,
               }
               
               NumObs <- length(MyX.mod)
+              
             } else {
               slope <- NA
               ci1 <- NA
@@ -283,7 +310,6 @@ metrics.all <- function(TS, Qmax=0.95, Dur=5,
               MyMeans <- NA
               NumObs <- NA
             }
- 
             
             params.sub <- list(MetricID=i, MetricName=MyTitles[i], Slope=slope, ci1=ci1, ci2=ci2,
                                pval=pval, cpts=MyCpts, means=MyMeans, NumObs=NumObs)
@@ -292,11 +318,15 @@ metrics.all <- function(TS, Qmax=0.95, Dur=5,
             params[[name]] <- params.sub
         }
         
-        output <- list(metricTS=Pdata, tcpRes=params, indata=TS, OmitYrs=OmitYears)
+        output <- list(metricTS=Pdata, tcpRes=params, indata=TS.sub, OmitYrs=OmitYears, 
+                       plot.title=list(plot_title, title_size))
         
         return(output)
     
-    } else {return("Record is not of sufficient length (<5 hyears)")}
+    } else {
+    message('Flow screening not completed.')
+    return("Flow screening not completed. Streamflow record must contain at least 10 hydrologic years of data.")
+    }
 }
     
     

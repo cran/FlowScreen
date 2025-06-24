@@ -4,11 +4,14 @@
 \alias{pk.cov}
 \title{Center of Volume}
 \usage{
-pk.cov(TS)
+pk.cov(TS, threshold.missing = 0.5)
 }
 \arguments{
-\item{TS}{output from \code{\link{create.ts}} containing a data.frame of flow
-time series}
+\item{TS}{data.frame of streamflow time series loaded with \code{\link{read.flows}}.}
+
+\item{threshold.missing}{Numeric value indicating the fraction of data that can 
+be missing in a single year. Years with a missing data above this threshold will have
+NA values returned. Default is 0.5 (max of 50\% missing data allowed).}
 }
 \value{
 Returns a data.frame with the following columns:
@@ -30,12 +33,14 @@ subsetting is done to include only days with observations in all years.
 }
 \examples{
 data(cania.sub.ts)
+cania.sub.ts <- set.plot.titles(cania.sub.ts, 
+title.elements = c("StationID", "StnName", "StateProv"))
 res1 <- pk.cov(cania.sub.ts)
 
 # trend and changepoint plot for baseflow peak start doy
 res2 <- screen.metric(res1[,2], "Day of Year")
+res2 <- screen.metric(res1[,2], "Day of Year", title = TRUE)
 }
 \author{
 Jennifer Dierauer
 }
-

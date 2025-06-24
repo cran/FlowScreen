@@ -1,6 +1,6 @@
 #' Add calendar year, month, and day of year columns
 #' 
-#' @param TS Output from \code{\link{create.ts}} function.
+#' @param TS data.frame of streamflow time series loaded with \code{\link{read.flows}}.
 #' @return Returns a data.frame with year, month, and doy columns appended.
 #' @author Jennifer Dierauer
 

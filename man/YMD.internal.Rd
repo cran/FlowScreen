@@ -7,7 +7,7 @@
 YMD.internal(TS)
 }
 \arguments{
-\item{TS}{Output from \code{\link{create.ts}} function.}
+\item{TS}{data.frame of streamflow time series loaded with \code{\link{read.flows}}.}
 }
 \value{
 Returns a data.frame with year, month, and doy columns appended.
@@ -18,4 +18,3 @@ Add calendar year, month, and day of year columns
 \author{
 Jennifer Dierauer
 }
-

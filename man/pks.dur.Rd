@@ -19,12 +19,16 @@ Returns a numeric vector containing the duration (in days) between peaks
 This function calculates duration (in days) between flow peaks.
 }
 \examples{
-data(cania.sub.ts)
-res1 <- pks(cania.sub.ts)
+data(caniapiscau)
+cania.ts <- create.ts(caniapiscau, hyrstart = 4)
+cania.ts <- drop.years(cania.ts)
+cania.ts <- set.plot.titles(cania.ts, 
+title.elements = c("StationID", "StnName", "StateProv"))
+
+res1 <- pks(cania.ts)
 res2 <- pks.dur(res1)
-res3 <- screen.metric(res2, "Inter-Event Duration (days)")
+res3 <- screen.metric(res2, ylabel = "Inter-Event Duration (days)")
 }
 \author{
 Jennifer Dierauer
 }
-

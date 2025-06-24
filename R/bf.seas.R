@@ -2,8 +2,7 @@
 #' 
 #' This function estimates the percentage of baseflow in a given period relative to the total
 #' annual baseflow.
-#' @param TS output from \code{\link{create.ts}} containing a data.frame of flow
-#'  time series
+#' @param TS data.frame of streamflow time series loaded with \code{\link{read.flows}}.
 #' @param seas Integers representing months of the year. Default is c(6:8), i.e. June-August.
 #' @details This function calls \code{\link{bf_eckhardt}} to complete the 
 #'   baseflow separation.
@@ -15,10 +14,14 @@
 #' @export
 #' @examples
 #' data(cania.sub.ts)
+#' cania.sub.ts <- set.plot.titles(cania.sub.ts, title.elements = c("StationID", "Country"))
 #' res <- bf.seas(cania.sub.ts)
-#' res2 <- screen.metric(res, "Percent Annual Baseflow in Jun-Aug")
+#' res2 <- screen.metric(res, "Percent Annual Baseflow in Jun-Aug", title = TRUE)
 
 bf.seas <- function(TS, seas=c(6:8)) {
+    
+    plot_title <- attr(TS, 'plot title')
+    title_size <- attr(TS, 'title size')
     
     ### Set parameter values for Eckhardt RDF
     BFindex <- 0.8
@@ -46,8 +49,18 @@ bf.seas <- function(TS, seas=c(6:8)) {
         BFpct <- c(BFpct, BFpct.sub)
     }
     
+    BFpct[is.infinite(BFpct)] <- NA
+    
     attr(BFpct, "times") <- as.numeric(years)
     attr(BFpct, "dimnames") <- NULL
+    attr(BFpct, 'StationID') <- TS$ID[1]
+    attr(BFpct, 'Agency') <- TS$Agency[1]
+    
+    # carry-over the plot title if it has been set
+    if (!is.null(plot_title)) {
+        attr(BFpct, 'plot title') <- plot_title
+        attr(BFpct, 'title size') <- title_size
+    }
     
     return(BFpct)
     

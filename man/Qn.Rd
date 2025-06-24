@@ -7,8 +7,7 @@
 Qn(TS, n = 0.1, by = "hyear")
 }
 \arguments{
-\item{TS}{output from \code{\link{create.ts}} containing a data.frame of flow
-time series}
+\item{TS}{data.frame of streamflow time series loaded with \code{\link{read.flows}}.}
 
 \item{n}{Numeric value of the quantile.  Default is 0.1.}
 
@@ -26,17 +25,20 @@ This function calculates flow quantiles by hydrologic year, calendar
 year, month, or doy.
 }
 \examples{
-data(cania.sub.ts)
+data(caniapiscau)
+cania.ts <- create.ts(caniapiscau, hyrstart = 4)
+cania.ts <- drop.years(cania.ts)
+cania.ts <- set.plot.titles(cania.ts, 
+title.elements = c("StationID", "StnName", "StateProv"))
 
 # 50\% quantile, i.e. mean, by calendar year
-res <- Qn(cania.sub.ts, n=0.5, by="year")
-res2 <- screen.metric(res, "Q (m3/s)")
+res <- Qn(cania.ts, n=0.5, by="year")
+res2 <- screen.metric(res, ylabel = "Q (m3/s)")
 
 # Default 10\% quantile, by hydrologic year
-res <- Qn(cania.sub.ts)
-res2 <- screen.metric(res, "Q (m3/s)")
+res <- Qn(cania.ts)
+res2 <- screen.metric(res, ylabel = "Q (m3/s)")
 }
 \author{
 Jennifer Dierauer
 }
-

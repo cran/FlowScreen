@@ -4,10 +4,13 @@
 \alias{get.titles.internal}
 \title{Returns plot titles and labels based on plot type and language preference}
 \usage{
-get.titles.internal(type, language = "English", Qmax)
+get.titles.internal(type, flow.units, language = "English", Qmax)
 }
 \arguments{
 \item{type}{character indicating the type of summary plot}
+
+\item{flow.units}{Character string indicating the units for streamflow values, one of either
+'ft3/s' or 'm3/s', taken from the flow time series data.frame created with \code{read.flows}}
 
 \item{language}{"English" or "French"}
 
@@ -19,4 +22,3 @@ Returns plot titles and labels based on plot type and language preference
 \author{
 Jennifer Dierauer
 }
-

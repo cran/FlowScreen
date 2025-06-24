@@ -2,8 +2,7 @@
 #' 
 #' This function calculates the daily moving window quantile threshold for use in 
 #' identifying the partial duration series of streamflow droughts. 
-#' @param TS output from \code{\link{create.ts}} containing a data.frame of flow
-#'   time series
+#' @param TS data.frame of streamflow time series loaded with \code{\link{read.flows}}.
 #' @param Qdr Numeric value of the drought threshold quantile.  Default is 0.2.
 #' @param WinSize Numeric value specifying the size of the moving window in
 #'   days.  Default is 30.
@@ -26,35 +25,55 @@
 #' 
 #'   The following functions use this function: \code{\link{dr.pds}}, 
 #'   \code{\link{dr.events}}, \code{\link{dr.seas}}
+#' @importFrom stats quantile
 #' @export
 #' @examples
 #' data(cania.sub.ts)
 #' res <- mqt(cania.sub.ts)
 #' 
 #' # subset one year of the flow series
-#' flow.sub <- cania.sub.ts[cania.sub.ts$year == 1990,]
+#' flow.sub <- cania.sub.ts[cania.sub.ts$year == 1972,]
 #' 
-#' # plot the 1990 observed flows in dark blue and the daily drought threshold in red
+#' # plot the 1972 observed flows in dark blue and the daily drought threshold in red
 #' plot(flow.sub$doy, flow.sub$Flow, ylab="Q (m3/s)", xlab="Day of Year",
 #'  pch=19, col="darkblue", type="b")
 #' points(res, pch=19, cex=0.7, col="red")
 
 mqt <- function(TS, Qdr=0.2, WinSize=30){
     
+    # Input validation
+    if (!is.data.frame(TS) || !all(c("doy", "Flow") %in% names(TS))) {
+        stop("TS must be a data frame with 'doy' and 'Flow' columns.")
+    }
+    
+    if (!is.numeric(Qdr) || Qdr < 0 || Qdr > 1) {
+        stop("Qdr must be a numeric value between 0 and 1.")
+    }
+    
+    if (!is.numeric(WinSize) || WinSize <= 0) {
+        stop("WinSize must be a positive numeric value.")
+    }
+    
     doy <- TS$doy
     output <- array(NA, 365)
-    doys <- c((365-(0.5*WinSize)):365, 1:365, 1:(0.5*WinSize))
-        
+    doys <- c((365 - (0.5 * WinSize)):365, 1:365, 1:(0.5 * WinSize))
+    
     for (i in 1:365) {
-        selected <- doys[i:(i+WinSize)]
-        temp <- TS[doy %in% selected,]
-        ## added if statement to handle seasonal 
-        if (length(temp$Flow) > WinSize) {
-            output[i] <- stats::quantile(temp$Flow, Qdr, na.rm=TRUE)
-        } else {output[i] <- 0}
+        selected <- doys[i:(i + WinSize)]
+        temp <- TS[doy %in% selected, ]
+        
+        # Handle seasonal and NA values
+        if (nrow(temp) > WinSize) {
+            output[i] <- stats::quantile(temp$Flow, Qdr, na.rm = TRUE)
+        } else {
+            output[i] <- 0
+        }
     }
-    output[366] <- (output[365] + output[1])/2
+    
+    # Handle edge case for last value
+    output[366] <- (output[365] + output[1]) / 2
     attr(output, "names") <- c(1:366)
+    
     return(output)
 }
 

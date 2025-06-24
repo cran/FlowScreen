@@ -2,8 +2,7 @@
 #' 
 #' This function returns the partial duration series for streamflow droughts 
 #' based on a moving window quantile threshold.
-#' @param TS output from \code{\link{create.ts}} containing a data.frame of flow
-#'   time series
+#' @param TS data.frame of streamflow time series loaded with \code{\link{read.flows}}.
 #' @param Qdr Numeric value of the drought threshold quantile.  Default is 0.2.
 #' @param WinSize Numeric value specifying the size of the moving window in
 #'   days.  Default is 30. 
@@ -52,18 +51,16 @@
 
 dr.pds <- function(TS, Qdr=0.2, WinSize=30) {
     
-    doy <- as.factor(TS$doy)
-    temp <- TS
+    ### Ensure TS doesn't have NA values in Flow
+    temp <- subset(TS, !is.na(TS$Flow))
     
-    ### based on moving threshold
+    ### Calculate moving threshold
     myVarThresh <- mqt(TS, Qdr, WinSize)
     
-    for (i in 1:length(temp$Flow)) {
-        temp$Thresh[i] <- myVarThresh[doy[i]]
-        if (temp$Flow[i] < myVarThresh[doy[i]]) {
-            temp$BelowThresh[i] <- TRUE}
-        else {temp$BelowThresh[i]<-FALSE}
-    } 
+    ### Assign thresholds and determine if Flow is below threshold
+    doy <- as.factor(temp$doy)
+    temp$Thresh <- myVarThresh[doy]
+    temp$BelowThresh <- temp$Flow < temp$Thresh
     
     return(temp)
 }

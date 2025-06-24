@@ -7,8 +7,7 @@
 pks(TS, Dur = 5, Qmax = 0.95)
 }
 \arguments{
-\item{TS}{output from \code{\link{create.ts}} containing a data.frame of flow
-time series}
+\item{TS}{data.frame of streamflow time series loaded with \code{\link{read.flows}}.}
 
 \item{Dur}{numeric value of the minimum number of days between peaks}
 
@@ -32,11 +31,15 @@ Peaks Over Threshold values are calcuated as mean daily streamflow (m3/s)
   \code{\link[evir]{decluster}}.
 }
 \examples{
-data(cania.sub.ts)
-res <- pks(cania.sub.ts)
-res2 <- screen.metric(res, "Peak Over Threshold (m3/s)")
+data(caniapiscau)
+cania.ts <- create.ts(caniapiscau, hyrstart = 4)
+cania.ts <- drop.years(cania.ts)
+cania.ts <- set.plot.titles(cania.ts, 
+title.elements = c("StationID", "StnName", "StateProv"))
+
+res <- pks(cania.ts)
+res2 <- screen.metric(res, ylabel = "Peak Over Threshold (m3/s)", title = TRUE)
 }
 \author{
 Jennifer Dierauer
 }
-

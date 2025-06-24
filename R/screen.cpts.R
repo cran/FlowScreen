@@ -6,28 +6,54 @@
 #' @param type character indicating which type of metric to compile change points for.
 #'   Options are "h" for high flow metrics, "l" for low flow metrics, "b" for baseflow 
 #'   metrics, or "a" for all 30 metrics (10 high, 10 low, 10 baseflow).
-#' @param text optional character string for margin text, e.g. for station name, 
-#'   location, or other notes. Set to NULL if no margin text is wanted, or set to "d" 
-#'   to use default text containing the station ID, station name, and province/state 
-#'   returned from \code{\link{station.info}}.
+#' @param title optional plot title. Default is FALSE indicating no plot title is wanted. 
+#'   Set to TRUE to use the the default plot title, which will 
+#'   look for 'plot title' attribute of the data.frame set by 
+#'   \code{\link{set.plot.titles}}. All values other values 
+#'   will be used as a custom plot title.
+#' @param change.margins TRUE or FALSE to indicate whether the user's current 
+#' margin settings should be used, or if the margins should be set within the 
+#' function. Default is TRUE, to set margins to the minimal amount. 
 #' @return When type="a", returns a data.frame of changepoint counts by metric 
 #'   type and year.
 #' @author Jennifer Dierauer
 #' @seealso \code{\link{metrics.all}}
+#' @importFrom grDevices cm.colors
+#' @import graphics
 #' @export
 #' @examples
 #' # load results from metrics.all function for the Caniapiscau River
 #' data(caniapiscau.res)
 #' 
-#' # plot changepoints for all metrics
+#' # plot changepoints for all groups of metrics
 #' screen.cpts(caniapiscau.res, type="l")
+#' screen.cpts(caniapiscau.res, type="h")
+#' screen.cpts(caniapiscau.res, type="b")
 
-screen.cpts <- function(metrics, type="a", text=NULL) {
+screen.cpts <- function(metrics, type="a", title = FALSE, change.margins = TRUE) {
+    
+    if (!(is.list(metrics))) {
+        if ((length(metrics) == 1)) {
+            if (metrics == "Flow screening not completed. Streamflow record must contain at least 10 hydrologic years of data.") {
+                message(metrics)
+                return(NULL)
+            } else {stop("Invalid Input")}
+        } else {stop("Invalid Input")}
+    }
+    
+    if (!("tcpRes" %in% names(metrics))) {
+        stop("Invalid Input")
+    }
+    if (!("indata" %in% names(metrics))) {
+        stop("Invalid Input")
+    }
     
     opar <- graphics::par(no.readonly = TRUE)
+    plot_title <- metrics$plot.title[[1]][1]
+    title_size <- metrics$plot.title[[2]][1]
     
-    res <- metrics[[2]]
-    TS <- metrics[[3]]
+    res <- metrics$tcpRes
+    TS <- metrics$indata
     cptsh <- list() 
     cptsl <- list()
     cptsb <- list()
@@ -141,26 +167,36 @@ screen.cpts <- function(metrics, type="a", text=NULL) {
 
     y1 <- expression(paste("Discharge (m" ^{3}, "/s)"))
     
-    graphics::par(mar = c(3,5,2,5))
-    if (!is.null(text)) {graphics::par(oma=c(0,0,1,0))}
+    if (change.margins == TRUE) {graphics::par(mar = c(3,5,2,5))}
+    if (title == TRUE) {
+        if (change.margins == TRUE) {graphics::par(oma=c(0,0,1,0))}
+    }
     
     graphics::plot(TS$Date, TS$Flow, pch=19, cex=0.3, ylab=y1, xlab="",
          xlim=myxlims, ylim=myylims, col="grey50")
     graphics::title(main=mtitle)
     
-    if (!is.null(text)) {
+    # add optional margin text
+    if (title != FALSE) {
         
-        if (text == "d") {
-            stinfo <- station.info(TS, Plot=F)
-            text <- paste("ID: ", stinfo[1],", NAME: ", stinfo[2],
-                          ", PROV/STATE: ", stinfo[3], sep = "")
+        if (title == TRUE) {
+            if (!is.null(plot_title)) {
+                title.text <- plot_title
+            } else {title.text <- NULL}
+        } else {
+            title.text <- title
         }
         
-        graphics::mtext(text, side=3, line=0, outer=T, cex=0.7)
+        if (!is.null(title_size)) {
+            mcex <- title_size
+        } else {mcex <- 1}
+        
+        graphics::mtext(title.text, side=3, line=0, outer=T, cex=mcex)
     }
+    
 
     ### add shaded polygons covering missing data periods
-    MissingDays <- NA.runs(TS)
+    MissingDays <- suppressMessages(NA.runs(TS))
     polycol <- grDevices::gray(0.5, alpha=0.5)
     if (length(MissingDays$Start) != 0) {
         for (i in 1:length(MissingDays$Start)) {

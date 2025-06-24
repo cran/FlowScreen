@@ -7,8 +7,7 @@
 bf.seas(TS, seas = c(6:8))
 }
 \arguments{
-\item{TS}{output from \code{\link{create.ts}} containing a data.frame of flow
-time series}
+\item{TS}{data.frame of streamflow time series loaded with \code{\link{read.flows}}.}
 
 \item{seas}{Integers representing months of the year. Default is c(6:8), i.e. June-August.}
 }
@@ -27,13 +26,13 @@ This function calls \code{\link{bf_eckhardt}} to complete the
 }
 \examples{
 data(cania.sub.ts)
+cania.sub.ts <- set.plot.titles(cania.sub.ts, title.elements = c("StationID", "Country"))
 res <- bf.seas(cania.sub.ts)
-res2 <- screen.metric(res, "Percent Annual Baseflow in Jun-Aug")
-}
-\author{
-Jennifer Dierauer
+res2 <- screen.metric(res, "Percent Annual Baseflow in Jun-Aug", title = TRUE)
 }
 \seealso{
 See \code{\link{bf.stats}} to calculate additional baseflow metrics.
 }
-
+\author{
+Jennifer Dierauer
+}

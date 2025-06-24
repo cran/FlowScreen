@@ -2,9 +2,9 @@
 % Please edit documentation in R/screen.summary.R
 \name{screen.summary}
 \alias{screen.summary}
-\title{Create a screening plot}
+\title{Create a summary screening plot}
 \usage{
-screen.summary(metrics, type = "h", language = "English", StnInfo = NULL)
+screen.summary(metrics, type = "h", language = "English")
 }
 \arguments{
 \item{metrics}{output from \code{\link{metrics.all}}}
@@ -15,12 +15,6 @@ metrics.}
 
 \item{language}{Language for plot labels.  Choice of either "English" or
 "French". Default is "English".}
-
-\item{StnInfo}{Optional data.frame containing user-supplied station info for plot. 
-data.frame must have 7 columns containing station info in the following order:
-Station ID, Station Name, Prov/State, Country, Latitude, Longitude, Catchment Area
-If any of the information is unavailabe, fill with NA.  The Station ID column must
-match the Station ID in column 1 of the data.frame input from \code{\link{create.ts}}.}
 }
 \description{
 Produces summary screening plots of high flow, low flow, or baseflow metrics.  
@@ -48,13 +42,14 @@ For the center of volume (COV) plots on the high flow and baseflow screening plo
 data(caniapiscau.res)
 
 # create a summary flow screening plot of the high flow metrics
-screen.summary(caniapiscau.res, type="l")
-}
-\author{
-Jennifer Dierauer
+screen.summary(caniapiscau.res, type="h")
+# screen.summary(caniapiscau.res, type = "l")
+# screen.summary(caniapiscau.res, type = "b)
 }
 \references{
 Whitfield, P.H. 2013. Is 'Center of Volume' a robust indicator of changes 
   in snowmelt timing? Hydrological Processes 27:2691-8.
 }
-
+\author{
+Jennifer Dierauer
+}

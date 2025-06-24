@@ -2,26 +2,71 @@
 % Please edit documentation in R/read.flows.R
 \name{read.flows}
 \alias{read.flows}
-\title{Read .csv or .Rdata file of streamflows}
+\title{Read file of streamflows}
 \usage{
-read.flows(filename, convert = FALSE)
+read.flows(filename, flow.units = "m3/s", convert.to = NULL, hyrstart = 10)
 }
 \arguments{
-\item{filename}{name of .csv file to be read.}
+\item{filename}{name of .csv, .txt, .rds, or .rdata file to be read. 
+Filename should contain the file type extension, e.g. "station1.csv"}
 
-\item{convert}{Boolean indicating whether or not to convert USGS flow values
-from cubic feet per second to cubic meters per second. (Axes are automatically 
-labeled in cubic meters per second)}
+\item{flow.units}{Character string indicating the units for streamflow values, one of either
+'ft3/s' or 'm3/s'. If the streamflow is in different units, it must be converted prior to use of 
+the package functions, or the units will be labeled as 'Unknown'. Default is 'm3/s'.}
+
+\item{convert.to}{Character string indicating desired flow units (if different 
+from original flow units). Options are 'm3/s' or 'ft3/s'. Default is \code{NULL}, 
+indicating no unit conversion. If input matches the \code{flow.units} parameter, nothing will be done.}
+
+\item{hyrstart}{integer used to define start month of hydrologic year. Defaults to 10 (October).}
 }
 \description{
-Reads .csv or .Rdata files of daily streamflow time series.  Recognizes 
-several formats, including those used by Water Survey Canada and the United 
-States Geological Survey. Uses read.csv() or load() functions from base package, 
-returns data frame with ID, Date, and Flow, and, if available,
+Reads .csv, .Rdata, or .rds files of daily streamflow time series.  Recognizes 
+several formats, including those used by Water Survey Canada (WSC), United 
+States Geological Survey (USGS), and ROBIN. Reads fixed width .txt files in 
+GRDC format only. Uses read.csv(), load(), readRDS(), read.fwf() functions 
+from base package and returns data frame with ID, Date, Flow, Agency,  and, if available,
 associated quality codes and source agency. Replaces negative values that are 
 sometimes used to denote missing data with NAs.
+}
+\details{
+Streamflow records in .csv, .Rdata, or .rds format that are not from the 
+USGS, WSC, ROBIN, or GRDC can be read by read.flows() if they contain the 
+following required columns. Date format is auto-detected as long as it is some 
+version of YYYY/mm/dd, mm/dd/YYYY, mm-dd-yy, etc. The file-to-be-read must 
+contain, at a minimum, columns containing a partial matches to the following 
+(not case sensitive):
+   \itemize{
+    \item flow | val | value for the daily streamflow discharge (Flow column)
+    \item id | site for the ID column
+    \item date for the Date column  
+  }
+  
+Optional columns names for partial matching include:  
+   \itemize{
+    \item sym | code | flag for the SYM column (quality codes)
+    \item agency for the Agency column
+  }
+}
+\examples{
+
+# example code to read a file, not run
+# my_file_path <- "/Project/file1.csv"
+# dat1 <- read.flows(my_file_path)
+
+# Example code using external files included with the package
+wsc_path <- system.file("extdata", "WSC_example.csv", package = "FlowScreen")
+wsc_dat <- read.flows(wsc_path)
+
+usgs_path <- system.file("extdata", "USGS_example.csv", package = "FlowScreen")
+usgs_dat <- read.flows(usgs_path, flow.units = 'ft3/s', convert.to = 'm3/s')
+
+robin_path <- system.file("extdata", "ROBIN_example.csv", package = "FlowScreen")
+robin_dat <- read.flows(robin_path)
+
+grdc_path <- system.file("extdata", "GRDC_example.txt", package = "FlowScreen")
+grdc_dat <- read.flows(grdc_path)
 }
 \author{
 Jennifer Dierauer
 }
-
