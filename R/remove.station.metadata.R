@@ -8,7 +8,7 @@
 #' @return The metadata of the removed station if found and removed, or NULL if not found.
 #' @export
 #' @examples
-#' 
+#' \dontrun{
 #' # Add station metadata
 #' met_added <- add.station.metadata(
 #'   Agency = "Foo Bar",
@@ -30,6 +30,7 @@
 #'   Agency = "Foo Bar",
 #'   StationID = "01234"
 #' )
+#' }
 
 remove.station.metadata <- function(Agency, StationID) {
   

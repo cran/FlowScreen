@@ -1,6 +1,6 @@
 Package: FlowScreen
 Title: Daily Streamflow Trend and Change Point Screening
-Version: 2.0
+Version: 2.1
 Authors@R: c(person("Jennifer", "Dierauer", 
   role = c("aut", "cre"), email="jen.r.brand@gmail.com"),
   person("Paul", "Whitfield", role = "aut", 
@@ -27,10 +27,10 @@ License: GPL (>= 2)
 LazyData: true
 RoxygenNote: 7.2.2
 Encoding: UTF-8
-Packaged: 2025-06-23 21:14:34 UTC; NS94HFF
+Packaged: 2025-07-05 18:11:08 UTC; NS94HFF
 Maintainer: Jennifer Dierauer <jen.r.brand@gmail.com>
 NeedsCompilation: no
 Author: Jennifer Dierauer [aut, cre],
   Paul Whitfield [aut]
 Repository: CRAN
-Date/Publication: 2025-06-24 07:50:14 UTC
+Date/Publication: 2025-07-05 18:20:02 UTC

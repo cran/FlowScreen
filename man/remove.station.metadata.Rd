@@ -20,7 +20,7 @@ If the agency is "USGS" and the station is not found, it will also check by addi
 to the beginning of the StationID. Used to remove a case added in error.
 }
 \examples{
-
+\dontrun{
 # Add station metadata
 met_added <- add.station.metadata(
   Agency = "Foo Bar",
@@ -42,4 +42,5 @@ met_removed <- remove.station.metadata(
   Agency = "Foo Bar",
   StationID = "01234"
 )
+}
 }

@@ -1,4 +1,4 @@
-dc5b891149856b261e42aa21745454f5 *DESCRIPTION
+d6778d6c8ba0c21a7e639967d7132392 *DESCRIPTION
 5a5aa32651e87b65808ba11a00163c58 *NAMESPACE
 db77e98b05a6568a2cfddac7386ae5a1 *NEWS.md
 57cf19770b7cdf3e833c8948de0a809f *R/FDC.R
@@ -7,7 +7,7 @@ f47854d72afda928ed9fecef0c031fa4 *R/MAMn.R
 da9805f970b543d3488bcfcfec001558 *R/NA.runs.r
 6b69ed2143a9befaa886a1ecf832acb2 *R/Qn.R
 b98840bfce908f6050aa6ec19b3d695b *R/YMD.internal.r
-a1d6cf58469f15ebf6fa2ebd71b9939a *R/add.station.metadata.R
+8c14317b5bec8427423c044d5613b26e *R/add.station.metadata.R
 183d45fe5c309c3f6d872029a25cf609 *R/axis_doy.internal.r
 e289902b51e7ea2372f87ba84501ace2 *R/bf.seas.R
 55f16667535762f84462af9d93fb8667 *R/bf.stats.R
@@ -17,7 +17,7 @@ d58e6ffc3bbb29c910c9db2294f60b92 *R/bf_eckhardt.r
 e73d7501e45ba5700a0241cf9d336329 *R/cania.sub.ts.R
 baf6f89251f375c22069a8da51d7c005 *R/caniapiscau.R
 a1275530563fb285cf557f3607e8fc0f *R/caniapiscau.res.R
-7682f79e5b30a63de9d1d7840a50abd0 *R/check_completeness.R
+00cf198be83e4920b8e011c537c5261e *R/check_completeness.R
 11a8e99164063c2e5bd901ee35142dfe *R/create.ts.r
 42074e66c71c482d96d7faff895f3494 *R/dr.events.R
 745caa20c9b8668f93b3d289b261abb0 *R/dr.pds.R
@@ -35,10 +35,10 @@ e89dc266c90b99b46b196970a7e6c8e7 *R/pk.max.R
 6cf032e515a59b44bbbae64c426ddc4a *R/pk.max.doy.R
 754e7a8274d0ff38aefe062aab71e695 *R/pks.R
 14f54bf6a4250ce8524ea9bc032124ee *R/pks.dur.R
-e3ff960a5cad8cd240bfc2e88341eae7 *R/read.flows.R
+23115f326a24287ed1ad0305fc1361d0 *R/read.flows.R
 fe29732a22ccb7a142d69feda21768f7 *R/regime.R
 eb89c65209e4f26b943cf52b695e028b *R/regime.internal.R
-0ebc95fe7f698c1da95178f4668ed07c *R/remove.station.metadata.R
+3baa2ab5168caeab95360896fc97ea81 *R/remove.station.metadata.R
 fb898465403fb1088857a0341e8e0803 *R/screen.cpts.R
 d99762a27e3c0550ae9975d4d6dbe9d2 *R/screen.frames.R
 cc9e965c2c995eaeaa398aa709938788 *R/screen.frames.internal.R
@@ -64,7 +64,7 @@ c76f8b5a47d7af28c1f45b224c9e4680 *man/FlowScreen.Rd
 5ac9f8d7603c7af1be3cac6ee8e43660 *man/NA.runs.Rd
 326e6bea59292a06a9bdf6f7f9fe7158 *man/Qn.Rd
 b323476ff33870c6a5d78b8934970105 *man/YMD.internal.Rd
-1722e30214b1b3b10ae718357657d5a3 *man/add.station.metadata.Rd
+0c99315b5e595f5f5166f1fee3a30db6 *man/add.station.metadata.Rd
 6d1e2434eaa47afa2f49f59f8b993bb7 *man/axis_doy.internal.Rd
 4983fe204c43b7e5764e557fea9c6598 *man/bf.seas.Rd
 9a5d6c90e5100641a15f317d24044cef *man/bf.stats.Rd
@@ -92,9 +92,9 @@ f4813c16d3b427b4aaa9c8144ea73aa8 *man/pk.max.Rd
 56980ebcb5823da7eb53127594fc92ec *man/pk.max.doy.Rd
 8f3f0fdcb445c20811cd84ae8e5e7456 *man/pks.Rd
 5c7ca3b8bce779b3e14c1ce939cbc686 *man/pks.dur.Rd
-be9da7c86367b1daecb40ccdbd8ad4a6 *man/read.flows.Rd
+b44873826addce2b553212c2b0d43728 *man/read.flows.Rd
 93c9e1ae971fc3c726f80c5dc287a917 *man/regime.Rd
-2b54f749f5524c5c8f3c8c07d04b3845 *man/remove.station.metadata.Rd
+94ead90d1694fb76cf5638ac081fa760 *man/remove.station.metadata.Rd
 9824e4e7d782a10620966a8ddb8099ed *man/screen.cpts.Rd
 6f82f6985323090816833932d4f642ab *man/screen.frames.Rd
 8c2b60203b9928d51e213d021d9dac0f *man/screen.frames.internal.Rd

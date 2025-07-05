@@ -34,6 +34,7 @@
 #' 
 #' @author Paul Whitfield
 #' @export
+
 check_completeness <- function(data, st_yr, nd_yr, allowed = 3, period = 10, pad = NULL, my = NULL) {
   
   if (!("complete_years" %in% names(data)) | !("years_total" %in% names(data))) {

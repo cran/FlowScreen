@@ -19,10 +19,16 @@
 #' @author Jennifer Dierauer
 #' @export
 #' @examples
-#' 
-#' met_added <- add.station.metadata(Agency = "Foo Bar", StationID = "01234", 
-#' StnName = "Example Station", Country = NA, Lat = 40.0, Lon = -89.0)
-#' print(met_added)
+#' \dontrun{
+#' met_added <- add.station.metadata(
+#'   Agency = "Foo Bar",
+#'   StationID = "01234",
+#'   StnName = "Example Station",
+#'   Country = NA,
+#'   Lat = 40.0,
+#'   Lon = -89.0
+#' )
+#' }
 
 add.station.metadata <- function(Agency, StationID, StnName, StateProv = NA, Country, 
                                  Lat, Lon, 

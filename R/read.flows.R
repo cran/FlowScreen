@@ -56,8 +56,10 @@
 #' robin_path <- system.file("extdata", "ROBIN_example.csv", package = "FlowScreen")
 #' robin_dat <- read.flows(robin_path)
 #' 
+#' \dontrun{
 #' grdc_path <- system.file("extdata", "GRDC_example.txt", package = "FlowScreen")
 #' grdc_dat <- read.flows(grdc_path)
+#' }
 
 read.flows <- function(filename, flow.units = 'm3/s', convert.to = NULL, hyrstart = 10) {
     

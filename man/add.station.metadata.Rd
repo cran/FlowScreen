@@ -49,10 +49,16 @@ Adds user-supplied station metadata to package database. Can also be used to upd
 metadata for a station that is already present in the metadata.
 }
 \examples{
-
-met_added <- add.station.metadata(Agency = "Foo Bar", StationID = "01234", 
-StnName = "Example Station", Country = NA, Lat = 40.0, Lon = -89.0)
-print(met_added)
+\dontrun{
+met_added <- add.station.metadata(
+  Agency = "Foo Bar",
+  StationID = "01234",
+  StnName = "Example Station",
+  Country = NA,
+  Lat = 40.0,
+  Lon = -89.0
+)
+}
 }
 \author{
 Jennifer Dierauer
